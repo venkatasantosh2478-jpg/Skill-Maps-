@@ -1,0 +1,36 @@
+{
+  "name": "Opportunity",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "project",
+        "certification",
+        "internship",
+        "job",
+        "competition",
+        "volunteer"
+      ]
+    },
+    "requiredSkills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "minLevel": {
+      "type": "number"
+    },
+    "link": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "type"
+  ]
+}

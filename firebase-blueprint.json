@@ -1,0 +1,80 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile with personalized learning metrics, XP, and badges",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "full_name": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["student", "admin"] },
+        "institution": { "type": "string", "maxLength": 128 },
+        "track": { "type": "string", "maxLength": 128 },
+        "careerGoal": { "type": "string", "maxLength": 128 },
+        "bio": { "type": "string", "maxLength": 1000 },
+        "resumeText": { "type": "string", "maxLength": 5000 },
+        "competencyGraph": { "type": "array" },
+        "roadmap": { "type": "object" },
+        "activityLog": { "type": "array" },
+        "xp": { "type": "number" },
+        "streakDays": { "type": "number" },
+        "quizzesCompleted": { "type": "number" },
+        "codeChallengesSolved": { "type": "number" },
+        "modulesCompleted": { "type": "number" },
+        "communityHelpCount": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "full_name"]
+    },
+    "Badge": {
+      "title": "Badge Milestone",
+      "description": "Virtual medal earned by student for achievements",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "badgeKey": { "type": "string", "maxLength": 64 },
+        "title": { "type": "string", "maxLength": 128 },
+        "description": { "type": "string", "maxLength": 256 },
+        "tier": { "type": "string", "enum": ["bronze", "silver", "gold", "platinum", "diamond"] },
+        "category": { "type": "string", "enum": ["course", "streak", "community", "code", "ai", "team"] },
+        "earnedAt": { "type": "string" },
+        "xpAwarded": { "type": "number" }
+      },
+      "required": ["userId", "badgeKey", "title", "tier", "category"]
+    },
+    "CommunityMessage": {
+      "title": "Community Message",
+      "description": "Student peer discussions and questions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "authorName": { "type": "string", "maxLength": 128 },
+        "authorRole": { "type": "string", "maxLength": 64 },
+        "content": { "type": "string", "maxLength": 2000 },
+        "channel": { "type": "string", "maxLength": 64 },
+        "helpfulVotes": { "type": "number" },
+        "helpfulVoterIds": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["authorId", "authorName", "content", "channel"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile with isolated metrics and identity"
+    },
+    "/users/{userId}/badges/{badgeId}": {
+      "schema": { "$ref": "#/entities/Badge" },
+      "description": "Virtual medals earned by user"
+    },
+    "/community_messages/{messageId}": {
+      "schema": { "$ref": "#/entities/CommunityMessage" },
+      "description": "Student community discussion board"
+    }
+  }
+}

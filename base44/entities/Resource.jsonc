@@ -1,0 +1,39 @@
+{
+  "name": "Resource",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "course",
+        "article",
+        "video",
+        "book",
+        "tutorial",
+        "documentation",
+        "project"
+      ]
+    },
+    "skill": {
+      "type": "string"
+    },
+    "levelBand": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ]
+    }
+  },
+  "required": [
+    "title",
+    "skill"
+  ]
+}

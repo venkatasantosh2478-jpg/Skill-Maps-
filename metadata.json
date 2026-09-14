@@ -1,0 +1,6 @@
+{
+  "name": "Skills Map",
+  "description": "Student competency platform featuring real-world sector future scope, 1:1 mentorship bookings, student community chat, interactive radar graphs, and adaptive learning roadmaps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

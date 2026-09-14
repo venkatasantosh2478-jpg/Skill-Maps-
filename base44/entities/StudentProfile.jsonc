@@ -1,0 +1,129 @@
+{
+  "name": "StudentProfile",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "track": {
+      "type": "string"
+    },
+    "resumeText": {
+      "type": "string"
+    },
+    "competencyGraph": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "skill": {
+            "type": "string"
+          },
+          "level": {
+            "type": "number"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "careerGoal": {
+      "type": "string"
+    },
+    "roadmap": {
+      "type": "object",
+      "properties": {
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "skill": {
+                "type": "string"
+              },
+              "currentLevel": {
+                "type": "number"
+              },
+              "targetLevel": {
+                "type": "number"
+              },
+              "durationWeeks": {
+                "type": "number"
+              },
+              "subGoals": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "locked",
+                  "in_progress",
+                  "complete"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "courseMode": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "dayIndex": {
+          "type": "number"
+        },
+        "streak": {
+          "type": "number"
+        },
+        "lastCompletedDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "certificateEarned": {
+          "type": "boolean"
+        }
+      }
+    },
+    "activityLog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "action": {
+            "type": "string"
+          },
+          "skillAffected": {
+            "type": "string"
+          },
+          "delta": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "missingSkills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
