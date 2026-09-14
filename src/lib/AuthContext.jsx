@@ -161,30 +161,9 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(false);
           }
         } else {
-          // Default initial student user session
-          const defaultStudent = {
-            uid: "student_default",
-            id: "student_default",
-            email: "student@skillsmap.io",
-            full_name: "Student Candidate",
-            role: "student",
-            institution: "University Institute of Technology",
-            careerGoal: "Full Stack Cloud & AI Engineer",
-            xp: 2150,
-            streakDays: 5,
-            modulesCompleted: 4,
-            quizzesCompleted: 8,
-            codeChallengesSolved: 9,
-            communityHelpCount: 3,
-            promptsGenerated: 2,
-            teamSquadJoined: 1,
-          };
-          setUser(defaultStudent);
-          setIsAuthenticated(true);
-          try {
-            localStorage.setItem("skillsmap_active_user", JSON.stringify(defaultStudent));
-            localStorage.setItem("skillsmap_mock_user", JSON.stringify(defaultStudent));
-          } catch (e) {}
+          // No active session found - stay logged out until explicit login
+          setUser(null);
+          setIsAuthenticated(false);
         }
         setAuthChecked(true);
         setIsLoadingAuth(false);

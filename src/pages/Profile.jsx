@@ -27,7 +27,10 @@ import {
   Activity, 
   AlertCircle,
   FolderGit2,
-  GraduationCap
+  GraduationCap,
+  Search,
+  X,
+  Eye
 } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { getMyProfile, updateProfile } from "@/lib/skillMap";
@@ -85,10 +88,18 @@ export default function Profile() {
   const [earnedBadges, setEarnedBadges] = useState([]);
   const [certificatesCount, setCertificatesCount] = useState(() => getStudentCertificates().length);
 
+  // User Directory / Find Users State
+  const [userDirectorySearch, setUserDirectorySearch] = useState("");
+  const [userRoleFilter, setUserRoleFilter] = useState("all");
+  const [userSkillFilter, setUserSkillFilter] = useState("all");
+  const [onlyTeamAvailable, setOnlyTeamAvailable] = useState(false);
+  const [selectedDirectoryUser, setSelectedDirectoryUser] = useState(null);
+  const [peerList, setPeerList] = useState(() => getPeerTalentList());
+
   // Sync tab from URL search parameters if changed
   useEffect(() => {
     const tabParam = searchParams.get("tab");
-    if (tabParam && ["overview", "certificates", "badges", "roadmaps", "projects", "reminders", "team_talent", "skill_matrix", "leaderboard"].includes(tabParam)) {
+    if (tabParam && ["overview", "manage_users", "certificates", "badges", "roadmaps", "projects", "reminders", "team_talent", "skill_matrix", "leaderboard"].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -525,12 +536,13 @@ export default function Profile() {
         <div className="flex items-center gap-1.5 overflow-x-auto pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
           {[
             { id: "overview", label: "Identity & Security", icon: Shield },
+            { id: "manage_users", label: user?.role === "admin" ? "Manage & Find Users" : "Find Users & Directory", icon: Users, badge: "Directory" },
             { id: "certificates", label: `My Certificates (${certificatesCount})`, icon: GraduationCap, badge: `${certificatesCount} Verified` },
             { id: "badges", label: `Virtual Medals (${earnedBadges.length})`, icon: Award, badge: `${earnedBadges.length} Earned` },
             { id: "roadmaps", label: "Career Roadmaps & Notes", icon: Map, badge: `${progressPct}%` },
             { id: "projects", label: `Projects (${projects.length})`, icon: FolderGit2 },
             { id: "reminders", label: `Reminders (${reminders.length})`, icon: Bell },
-            { id: "team_talent", label: "Team Willingness & Skills", icon: Users, badge: peerProfile.willingToJoinTeam ? "Available" : "Hidden" },
+            { id: "team_talent", label: "Team Willingness & Skills", icon: CheckCircle2, badge: peerProfile.willingToJoinTeam ? "Available" : "Hidden" },
             { id: "skill_matrix", label: "Interactive Skill Matrix", icon: Activity },
             { id: "leaderboard", label: "Leaderboard & Rankings", icon: Trophy },
           ].map((tab) => {
@@ -728,6 +740,319 @@ export default function Profile() {
               </button>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* TAB: MANAGE & FIND USERS DIRECTORY */}
+      {activeTab === "manage_users" && (
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+            <div>
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white font-heading">
+                  {user?.role === "admin" ? "Manage Users & Institutional Directory" : "Find Users & Student Directory"}
+                </h2>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Explore registered students, platform admins, and peer collaborators. Search profiles, inspect skills, or connect for team projects.
+              </p>
+            </div>
+
+            {user?.role === "admin" && (
+              <Link
+                to="/admin/students"
+                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all whitespace-nowrap"
+              >
+                <Shield className="h-3.5 w-3.5" />
+                <span>Open Admin User Management Console</span>
+              </Link>
+            )}
+          </div>
+
+          {/* Quick Stats Bar */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40">
+              <p className="text-3xs uppercase font-extrabold tracking-wider text-indigo-600 dark:text-indigo-400">Total Directory Members</p>
+              <p className="text-xl font-black text-slate-900 dark:text-white mt-0.5">{peerList.length} Members</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40">
+              <p className="text-3xs uppercase font-extrabold tracking-wider text-emerald-600 dark:text-emerald-400">Available for Teams</p>
+              <p className="text-xl font-black text-slate-900 dark:text-white mt-0.5">{peerList.filter((p) => p.willingToJoinTeam).length} Active Peers</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/40">
+              <p className="text-3xs uppercase font-extrabold tracking-wider text-amber-600 dark:text-amber-400">Institutions Represented</p>
+              <p className="text-xl font-black text-slate-900 dark:text-white mt-0.5">{new Set(peerList.map((p) => p.institution).filter(Boolean)).size} Universities</p>
+            </div>
+          </div>
+
+          {/* Filters & Search Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <div className="md:col-span-2 relative">
+              <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                value={userDirectorySearch}
+                onChange={(e) => setUserDirectorySearch(e.target.value)}
+                placeholder="Search user name, email, institution, or role..."
+                className="w-full pl-10 pr-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+              />
+              {userDirectorySearch && (
+                <button
+                  onClick={() => setUserDirectorySearch("")}
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            <div>
+              <select
+                value={userRoleFilter}
+                onChange={(e) => setUserRoleFilter(e.target.value)}
+                className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
+              >
+                <option value="all">All Roles</option>
+                <option value="student">Students</option>
+                <option value="admin">Administrators & Faculty</option>
+              </select>
+            </div>
+
+            <div>
+              <select
+                value={userSkillFilter}
+                onChange={(e) => setUserSkillFilter(e.target.value)}
+                className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
+              >
+                <option value="all">All Knowledge Skills</option>
+                {ALL_KNOWLEDGE_SKILLS.map((sk) => (
+                  <option key={sk} value={sk}>{sk}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Additional Filter Checkbox */}
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
+              <input
+                type="checkbox"
+                checked={onlyTeamAvailable}
+                onChange={(e) => setOnlyTeamAvailable(e.target.checked)}
+                className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <span>Show only members willing to join a team</span>
+            </label>
+
+            <span className="text-2xs text-slate-500 dark:text-slate-400">
+              Showing {peerList.filter((usr) => {
+                const q = userDirectorySearch.toLowerCase().trim();
+                const nameMatch = (usr.name || usr.full_name || "").toLowerCase().includes(q);
+                const emailMatch = (usr.email || "").toLowerCase().includes(q);
+                const instMatch = (usr.institution || "").toLowerCase().includes(q);
+                const roleMatch = (usr.roleTitle || usr.careerGoal || "").toLowerCase().includes(q);
+                const matchesQuery = !q || nameMatch || emailMatch || instMatch || roleMatch;
+                const matchesRoleFilter = userRoleFilter === "all" || (userRoleFilter === "admin" && (usr.role === "admin" || usr.email?.includes("admin"))) || (userRoleFilter === "student" && usr.role !== "admin" && !usr.email?.includes("admin"));
+                const matchesSkill = userSkillFilter === "all" || (usr.knowledgeSkills && usr.knowledgeSkills.some((s) => s.toLowerCase() === userSkillFilter.toLowerCase()));
+                const matchesTeam = !onlyTeamAvailable || usr.willingToJoinTeam;
+                return matchesQuery && matchesRoleFilter && matchesSkill && matchesTeam;
+              }).length} of {peerList.length} users
+            </span>
+          </div>
+
+          {/* Directory Users Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {peerList
+              .filter((usr) => {
+                const q = userDirectorySearch.toLowerCase().trim();
+                const nameMatch = (usr.name || usr.full_name || "").toLowerCase().includes(q);
+                const emailMatch = (usr.email || "").toLowerCase().includes(q);
+                const instMatch = (usr.institution || "").toLowerCase().includes(q);
+                const roleMatch = (usr.roleTitle || usr.careerGoal || "").toLowerCase().includes(q);
+                const matchesQuery = !q || nameMatch || emailMatch || instMatch || roleMatch;
+                const matchesRoleFilter = userRoleFilter === "all" || (userRoleFilter === "admin" && (usr.role === "admin" || usr.email?.includes("admin"))) || (userRoleFilter === "student" && usr.role !== "admin" && !usr.email?.includes("admin"));
+                const matchesSkill = userSkillFilter === "all" || (usr.knowledgeSkills && usr.knowledgeSkills.some((s) => s.toLowerCase() === userSkillFilter.toLowerCase()));
+                const matchesTeam = !onlyTeamAvailable || usr.willingToJoinTeam;
+                return matchesQuery && matchesRoleFilter && matchesSkill && matchesTeam;
+              })
+              .map((usr) => {
+                const isAdmin = usr.role === "admin" || usr.email?.includes("admin");
+                return (
+                  <div
+                    key={usr.id || usr.email}
+                    className="p-5 rounded-2xl bg-slate-50/60 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all flex flex-col justify-between gap-4"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "h-10 w-10 rounded-xl font-bold text-white flex items-center justify-center text-sm shadow-xs",
+                            isAdmin ? "bg-gradient-to-tr from-amber-500 to-rose-500" : "bg-gradient-to-tr from-indigo-600 to-violet-600"
+                          )}>
+                            {(usr.name || usr.full_name || "U").charAt(0)}
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                              <span>{usr.name || usr.full_name || "User Profile"}</span>
+                              {isAdmin && (
+                                <span className="px-1.5 py-0.2 rounded-md bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-3xs font-black uppercase">
+                                  Admin
+                                </span>
+                              )}
+                            </h3>
+                            <p className="text-2xs text-slate-500 dark:text-slate-400">
+                              {usr.email || "student@skillsmap.io"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <span className="px-2 py-0.5 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-3xs font-extrabold whitespace-nowrap">
+                          {usr.xp ? `${usr.xp} XP` : "Rank #3"}
+                        </span>
+                      </div>
+
+                      <div className="space-y-1 text-2xs text-slate-600 dark:text-slate-400">
+                        <p className="flex items-center gap-1 font-semibold text-slate-800 dark:text-slate-200">
+                          <Building className="h-3 w-3 text-slate-400" />
+                          <span>{usr.institution || "University Institute of Technology"}</span>
+                        </p>
+                        <p className="flex items-center gap-1 font-medium text-indigo-600 dark:text-indigo-400">
+                          <Briefcase className="h-3 w-3" />
+                          <span>{usr.roleTitle || usr.careerGoal || "Full Stack Cloud Architecture"}</span>
+                        </p>
+                      </div>
+
+                      {/* Knowledge skills */}
+                      {usr.knowledgeSkills && usr.knowledgeSkills.length > 0 && (
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {usr.knowledgeSkills.slice(0, 4).map((sk) => (
+                            <span key={sk} className="px-2 py-0.5 rounded-md bg-slate-200/80 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 text-3xs font-semibold">
+                              {sk}
+                            </span>
+                          ))}
+                          {usr.knowledgeSkills.length > 4 && (
+                            <span className="px-1.5 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-500 text-3xs font-bold">
+                              +{usr.knowledgeSkills.length - 4}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-2">
+                      <span className={cn(
+                        "text-3xs font-bold px-2 py-0.5 rounded-md",
+                        usr.willingToJoinTeam
+                          ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
+                          : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400"
+                      )}>
+                        {usr.willingToJoinTeam ? "Available for Teams" : "Not Looking"}
+                      </span>
+
+                      <button
+                        onClick={() => setSelectedDirectoryUser(usr)}
+                        className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-2xs font-bold flex items-center gap-1 shadow-2xs transition-all"
+                      >
+                        <Eye className="h-3 w-3" />
+                        <span>View Profile</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+
+          {/* Modal for Selected User Details */}
+          {selectedDirectoryUser && (
+            <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 max-w-lg w-full space-y-6 shadow-2xl relative animate-in fade-in zoom-in-95">
+                <button
+                  onClick={() => setSelectedDirectoryUser(null)}
+                  className="absolute right-5 top-5 h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+
+                <div className="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white font-black text-xl flex items-center justify-center">
+                    {(selectedDirectoryUser.name || selectedDirectoryUser.full_name || "U").charAt(0)}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white font-heading flex items-center gap-2">
+                      <span>{selectedDirectoryUser.name || selectedDirectoryUser.full_name}</span>
+                      {selectedDirectoryUser.role === "admin" && (
+                        <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-3xs font-black uppercase">
+                          Admin
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold">
+                      {selectedDirectoryUser.roleTitle || selectedDirectoryUser.careerGoal || "Software Engineer"}
+                    </p>
+                    <p className="text-2xs text-slate-500">
+                      {selectedDirectoryUser.institution || "University Institute of Technology"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <span className="block text-3xs uppercase font-extrabold tracking-wider text-slate-400 mb-1">
+                      Bio & Background
+                    </span>
+                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-700/50">
+                      {selectedDirectoryUser.bio || "Passionate engineer committed to mastery in distributed systems, AI integration, and full stack applications."}
+                    </p>
+                  </div>
+
+                  <div>
+                    <span className="block text-3xs uppercase font-extrabold tracking-wider text-slate-400 mb-1">
+                      Verified Knowledge Skills
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(selectedDirectoryUser.knowledgeSkills || ["React", "TypeScript", "Node.js", "System Design"]).map((sk) => (
+                        <span key={sk} className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-2xs font-semibold">
+                          {sk}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                      <span className="block text-3xs uppercase font-extrabold text-slate-400">Team Availability</span>
+                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                        {selectedDirectoryUser.willingToJoinTeam ? "Willing to Join Team" : "Not Looking"}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                      <span className="block text-3xs uppercase font-extrabold text-slate-400">Contact Preference</span>
+                      <span className="text-2xs font-bold text-slate-800 dark:text-slate-200 truncate block">
+                        {selectedDirectoryUser.contactPreference || selectedDirectoryUser.email || "Email / Discord"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <button
+                    onClick={() => setSelectedDirectoryUser(null)}
+                    className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold"
+                  >
+                    Close
+                  </button>
+                  <a
+                    href={`mailto:${selectedDirectoryUser.email || "student@skillsmap.io"}`}
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
+                  >
+                    <Mail className="h-3.5 w-3.5" />
+                    <span>Send Email Contact</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
