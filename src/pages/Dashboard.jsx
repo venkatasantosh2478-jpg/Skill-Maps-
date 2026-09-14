@@ -109,7 +109,9 @@ export default function Dashboard() {
   return (
     <div className="p-6 lg:p-10 max-w-7xl mx-auto space-y-8 font-body">
       {/* Modern Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 shadow-xl border border-indigo-900/40">
+      <div 
+        className="animate-in fade-in slide-in-from-top-4 duration-500 relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 shadow-xl border border-indigo-900/40"
+      >
         <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 rounded-full bg-indigo-500/15 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-1/3 -mb-8 w-48 h-48 rounded-full bg-violet-500/15 blur-2xl pointer-events-none" />
 
@@ -125,8 +127,14 @@ export default function Dashboard() {
                 Target: {profile.careerGoal || "Full Stack Engineer"}
               </span>
             </div>
-            <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
-              Welcome back, {profile.name?.split(" ")[0] || "Student"}
+            <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white flex items-center gap-2 flex-wrap">
+              <span>{(() => {
+                const hour = new Date().getHours();
+                if (hour >= 5 && hour < 12) return "Good morning";
+                if (hour >= 12 && hour < 17) return "Good afternoon";
+                if (hour >= 17 && hour < 22) return "Good evening";
+                return "Welcome back";
+              })()}, {profile.name?.split(" ")[0] || "Student"}</span> 👋
             </h1>
             <p className="text-slate-300 text-sm max-w-xl leading-relaxed">
               Your career readiness is currently tracking at <strong className="text-white font-semibold">{avg}% overall competency</strong>. 

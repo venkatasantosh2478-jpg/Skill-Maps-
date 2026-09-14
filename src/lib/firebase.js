@@ -11,8 +11,10 @@ import {
   onAuthStateChanged 
 } from "firebase/auth";
 import { 
+  initializeFirestore,
   getFirestore, 
-  enableIndexedDbPersistence,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   doc, 
   getDoc, 
   setDoc, 
@@ -25,20 +27,20 @@ import {
 import firebaseConfig from "../../firebase-applet-config.json";
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
-// Enable Firestore offline cache persistence to handle offline or unavailable backend gracefully
+// Modern Firestore initialization with persistent local cache to eliminate enableIndexedDbPersistence deprecation warning
+let firestoreDb;
 try {
-  enableIndexedDbPersistence(db).catch((err) => {
-    if (err.code === 'failed-precondition') {
-      // Multiple tabs open, persistence can only be enabled in one tab at a a time.
-      console.warn("Firestore multi-tab persistence precondition notice:", err.message);
-    } else if (err.code === 'unimplemented') {
-      // The current browser does not support all of the features required to enable persistence
-      console.warn("Firestore offline persistence not supported by browser environment.");
-    }
-  });
-} catch (e) {}
+  firestoreDb = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager()
+    })
+  }, firebaseConfig.firestoreDatabaseId || "(default)");
+} catch (e) {
+  firestoreDb = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+}
+
+export const db = firestoreDb;
 
 export const auth = getAuth(app);
 

@@ -19,6 +19,10 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+    dedupe: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', 'framer-motion', '@tanstack/react-query', 'recharts', 'lucide-react'],
   },
   plugins: [
     react(),
