@@ -1,0 +1,573 @@
+================================================================================
+SKILLMAP: COMPREHENSIVE PLATFORM SPECIFICATION & FEATURE DOCUMENTATION
+================================================================================
+Document Type    : Full System & Features Reference Manual
+Application Name : SkillMap (AI Academic Companion & Career Mentor)
+Environment      : Production Web Application (Cloud Run / Vite / Express)
+Target Audience  : Students, Faculty, Administrators, Recruiters, and Engineers
+Generated On     : 2026-09-22
+================================================================================
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1.  EXECUTIVE SUMMARY & PROBLEM STATEMENT
+2.  SYSTEM ARCHITECTURE & TECHNICAL STACK
+3.  CORE METHODOLOGY & DATA PHILOSOPHY
+4.  COMPLETE FEATURE-BY-FEATURE BREAKDOWN
+    4.1  Authentication, Onboarding & User State
+    4.2  Student Dashboard & 360° Competency Radar
+    4.3  Adaptive Assessment System (Item Response Theory Engine)
+    4.4  Skill Profiling & Baseline Diagnostic
+    4.5  Sector Scope Portal & Industry Benchmark Matrix
+    4.6  Personalized Dynamic Learning Roadmap
+    4.7  Student Lectures, Course Docs & Distraction-Free Study Mode
+    4.8  AI Timetable & Weekly Study Planner Generator
+    4.9  Career Readiness Suite (ATS Resume Matcher & Resume Generator)
+    4.10 1:1 Mentorship Hub & Interactive Booking Calendar
+    4.11 Community Hub, Peer Collaboration & Discussion Forums
+    4.12 Opportunity Board (Jobs, Internships & Research Fellowships)
+    4.13 Freelance Gig Incubator & Proposal Assistant
+    4.14 AI Startup & Project Idea Feasibility Analyzer
+    4.15 Gamification, XP Engine & Cohort Leaderboard
+    4.16 Student Profile, Account Settings & Preferences
+    4.17 Institutional Admin Command Center
+    4.18 Documentation & Engineering Reports Center
+5.  DATA SCHEMAS & ENTITY STRUCTURES
+6.  API SPECIFICATIONS & BACKEND INTEGRATIONS
+7.  SECURITY, PERMISSIONS & OFFLINE PERSISTENCE
+8.  DEPLOYMENT, BUILD & MAINTENANCE GUIDELINES
+--------------------------------------------------------------------------------
+
+
+================================================================================
+1. EXECUTIVE SUMMARY & PROBLEM STATEMENT
+================================================================================
+
+SkillMap is an AI-powered academic companion and career acceleration platform
+engineered to bridge the deep, systemic divide between university educational
+curricula and modern industry workforce expectations.
+
+Traditional university education relies heavily on periodic examinations, letter
+grades, and static syllabi that often trail industry practices by several years.
+Students frequently graduate without a clear understanding of:
+  - Exactly what technical and soft skills modern employers require.
+  - Where their own real strengths and weaknesses lie.
+  - Which specific milestones will turn their academic knowledge into a viable,
+    job-ready portfolio.
+
+SkillMap solves this challenge by introducing a real-time, multidimensional
+competency ecosystem. Using Google Gemini generative AI models, Firebase cloud
+storage with multi-tab offline synchronization, interactive 360° competency
+radar graphs, and adaptive Item Response Theory (IRT) diagnostic testing,
+SkillMap gives every learner an individualized, measurable path from enrollment
+to high-impact career placement.
+
+
+================================================================================
+2. SYSTEM ARCHITECTURE & TECHNICAL STACK
+================================================================================
+
+2.1 FRONTEND CLIENT ARCHITECTURE
+  - Core Framework   : React 18 (Single Page Application architecture)
+  - Build Tool       : Vite 8 with Rollup/Rolldown bundling
+  - Routing Engine   : React Router DOM v6 with protected routes and role checks
+  - State Management : @tanstack/react-query for asynchronous server state,
+                       combined with React Context API for global Authentication
+                       (AuthContext) and UI state.
+  - Styling System   : Tailwind CSS v3 with responsive utility classes and
+                       modern typography tokens.
+  - Animation Engine : CSS keyframe animations, Tailwind Animate, and spring
+                       micro-interactions.
+  - Component Icons  : Lucide React iconography system.
+  - Visualization    : Recharts (Radar, RadarChart, PolarGrid, PolarAngleAxis,
+                       BarChart, LineChart).
+
+2.2 DOCUMENT & REPORT GENERATION
+  - PDF Generation   : jsPDF v2 with jspdf-autotable plugin for formatted,
+                       multi-page corporate audit dossiers and system specs.
+  - Canvas Rendering : HTML2Canvas and DOM-to-Image for exporting visual
+                       radar charts, certificates, and portfolio badges.
+
+2.3 BACKEND API & SERVER INFRASTRUCTURE
+  - Server Framework : Node.js with Express.js written in TypeScript (server.ts).
+  - Production Bundle: esbuild compiles server.ts into an optimized CommonJS
+                       executable (dist/server.cjs).
+  - Reverse Proxy    : Express acts as a reverse proxy, hosting Vite development
+                       middlewares in dev and serving static assets in production.
+  - Cloud Platform   : Containerized deployment on Google Cloud Run listening on
+                       port 3000.
+
+2.4 ARTIFICIAL INTELLIGENCE LAYER
+  - Primary AI SDK   : @google/genai TypeScript SDK.
+  - AI Models        : Google Gemini 2.5 Flash for high-speed, cost-efficient
+                       structured JSON generations.
+  - Proxy Architecture: All client AI queries are channeled through the server
+                       endpoint (/api/ai/invoke-llm), keeping API keys strictly
+                       confidential and protected from browser exposure.
+  - Offline Fallbacks: Built-in deterministic JSON generator fallbacks ensure
+                       zero user disruption during network outages or API limits.
+
+2.5 DATA PERSISTENCE & USER AUTHENTICATION
+  - Auth Provider    : Firebase Authentication (Email/Password & Google OAuth).
+  - Cloud Database   : Cloud Firestore NoSQL document store.
+  - Local Resilience : Firestore persistentLocalCache with multi-tab manager
+                       (persistentMultipleTabManager) and browser LocalStorage
+                       fallback layers for completely offline-tolerant operation.
+
+
+================================================================================
+3. CORE METHODOLOGY & DATA PHILOSOPHY
+================================================================================
+
+SkillMap abandons flat GPA grading in favor of an iterative, 4-step competency
+loop:
+
+1. DIAGNOSE (Skill Profiling & Adaptive Assessment)
+   The learner undergoes initial track profiling followed by adaptive testing.
+   Skills are broken down into granular vectors (e.g., Backend, Frontend,
+   System Architecture, Problem Solving, Database, DevOps).
+
+2. VISUALIZE (360° Competency Radar & Sector Benchmarks)
+   Data is transformed into an intuitive radar visualization, immediately
+   revealing operational strengths and critical gaps compared against live
+   sector standards (e.g., Software, FinTech, HealthTech, Green Energy).
+
+3. ACTIVATE (AI Learning Roadmaps, Lectures & Timetable)
+   The platform curates tailored study milestones, automated lecture notes,
+   and daily study blocks to close identified skill gaps without wasted time.
+
+4. VALIDATE & CONNECT (Resume ATS Checks, Mentorship & Opportunities)
+   Learners validate their real-world capabilities by auditing resumes against
+   job descriptions, booking 1:1 sessions with industry leaders, and applying
+   for verified internships and freelance gigs.
+
+
+================================================================================
+4. COMPLETE FEATURE-BY-FEATURE BREAKDOWN
+================================================================================
+
+--------------------------------------------------------------------------------
+4.1 AUTHENTICATION, ONBOARDING & USER STATE
+--------------------------------------------------------------------------------
+- Landing Page (`/`):
+  * Dynamic, time-aware personalized greeting ("Good morning / afternoon /
+    evening, [Name]!") for authenticated visitors.
+  * Direct dashboard shortcuts, interactive track highlights, and institutional
+    footer with accreditation and contact portals.
+- User Registration (`/register`):
+  * Supports email/password account creation and Google OAuth single sign-on.
+  * Captures initial academic role, institutional affiliation, and graduation year.
+- Login Portal (`/login`):
+  * Secure credential validation, persistent session management, remember-me
+    functionality, and direct routing based on user role (Student vs Admin).
+- Password Recovery (`/forgot-password`, `/reset-password`):
+  * Self-service password recovery workflows powered by Firebase Auth.
+- Onboarding Wizard (`/onboarding`):
+  * Guides newly registered users through track selection (Full Stack Web, AI/ML,
+    Cloud & DevOps, Data Science, Mobile Systems, Cybersecurity).
+  * Initializes default competency graph vectors and baseline milestones.
+
+--------------------------------------------------------------------------------
+4.2 STUDENT DASHBOARD & 360° COMPETENCY RADAR (`/dashboard`)
+--------------------------------------------------------------------------------
+- Dynamic Welcome Banner:
+  * Personalized greeting with target role tracking (e.g., "Target: Full Stack
+    Engineer") and real-time average competency score calculation.
+- 360° Interactive Competency Radar (`CompetencyRadar.jsx`):
+  * Displays user proficiency across 6 key domain axes on a 0-100% scale.
+  * Compares current student rating against the recommended "Target Benchmark".
+  * Interactive tooltips show current level, recommended practice, and weight.
+- Quantitative Metric Stat Cards:
+  * Overall Competency Score (Calculated aggregate across all vectors).
+  * Active Study Streak (Consecutive days active).
+  * Assessments Completed (Total adaptive tests taken).
+  * Milestones Conquered (Roadmap tasks finished).
+- "Next Best Action" Recommendation Engine:
+  * Analyzes lowest-performing competency vectors and automatically generates
+    the most high-yield immediate task (e.g., "Practice Docker containerization
+    quiz to raise DevOps score").
+- Real-Time Skill Bumper & Activity Log:
+  * Allows students to log completed study hours or projects, dynamically
+    updating vector scores with smooth UI animations.
+- Quick Portal Navigation:
+  * Direct deep links to Roadmap, Assessment, Mentorship, and Resume Check.
+
+--------------------------------------------------------------------------------
+4.3 ADAPTIVE ASSESSMENT SYSTEM (`/assessment`)
+--------------------------------------------------------------------------------
+- Core Mechanism:
+  * Employs Item Response Theory (IRT) principles for intelligent difficulty
+    calibration.
+  * Tests consist of 5 sequential questions per round.
+- Adaptive Difficulty Scaling:
+  * Baseline difficulty begins at 0.40 (on a 0.00 to 1.00 normalized scale).
+  * Correct answers increase subsequent question difficulty (+0.15 up to 0.95).
+  * Incorrect answers decrease subsequent question difficulty (-0.15 down to 0.15).
+- Question Generation Architecture:
+  * Dynamically queries Google Gemini 2.5 Flash via `/api/ai/invoke-llm` to
+    synthesize novel, high-quality multiple choice technical questions
+    calibrated to the exact numeric difficulty level.
+  * Features an integrated, robust offline question bank (`quizBank.js`) covering
+    all engineering tracks to guarantee zero-downtime execution.
+- Instant Competency Graph Updates:
+  * Upon quiz completion, the student's mastery score is calculated based on the
+    peak difficulty reached.
+  * Automatically invokes `bumpSkill()` to update Firestore and the student's
+    radar chart in real-time.
+  * Records detailed audit activity in the student's persistent activity log.
+
+--------------------------------------------------------------------------------
+4.4 SKILL PROFILING & BASELINE DIAGNOSTIC (`/skill-profiling`)
+--------------------------------------------------------------------------------
+- Initial Self-Assessment Matrix:
+  * Multi-step questionnaire allowing students to self-rate comfort levels across
+    languages, frameworks, database systems, and tooling.
+- Career Goal Alignment:
+  * Maps selected target roles against industry demand frameworks.
+  * Establishes the initial baseline competency graph prior to taking adaptive
+    assessments.
+
+--------------------------------------------------------------------------------
+4.5 SECTOR SCOPE PORTAL & INDUSTRY BENCHMARK MATRIX (`/competencies`)
+--------------------------------------------------------------------------------
+- 6 Global Industry Sectors:
+  1. Software & Cloud Engineering
+  2. FinTech & Algorithmic Trading
+  3. HealthTech & Biomedical Informatics
+  4. Green Energy & Smart Mobility
+  5. EdTech & Learning Systems
+  6. Cybersecurity & Defense Systems
+- Interactive Sector Switching:
+  * Displays high-demand skills, entry requirements, salary bands, and market
+    growth projections per sector.
+- Real-Time Gap Analysis Chart (`SkillGapChart.jsx`):
+  * Visually overlays the student's live competency profile against the target
+    sector's baseline expectations.
+  * Identifies "Critical Deficits" and "Standout Strengths" with color-coded
+    visual indicators.
+
+--------------------------------------------------------------------------------
+4.6 PERSONALIZED DYNAMIC LEARNING ROADMAP (`/roadmap`)
+--------------------------------------------------------------------------------
+- Career-Tailored Step Hierarchy:
+  * Generates an end-to-end curriculum structured into chronological stages:
+    Foundations, Core Engineering, Advanced Systems, and Production Capstone.
+- Status Tracking & Progress Visualization:
+  * Every milestone includes status toggles: "Not Started", "In Progress", and
+    "Completed".
+  * Real-time progress bar recalculates total track completion percentage.
+- Milestone Details:
+  * Curated learning materials, estimated study duration, key deliverables,
+    and associated competency axes.
+- AI Roadmap Regeneration:
+  * Allows students to request an updated or specialized roadmap whenever their
+    career goals or skill trajectories change.
+
+--------------------------------------------------------------------------------
+4.7 STUDENT LECTURES, COURSE DOCS & STUDY MODE (`/lectures`, `/course-docs`, `/course-mode`)
+--------------------------------------------------------------------------------
+- Curated Video & Audio Lectures (`/lectures`):
+  * Comprehensive lecture modules covering fundamental and advanced computer
+    science topics.
+  * Includes duration tags, completion indicators, and direct video embeds.
+- Course Documentation Center (`/course-docs`):
+  * Searchable repository of course syllabus notes, cheat sheets, code snippets,
+    and core theoretical proofs.
+- Distraction-Free Study Mode (`/course-mode`):
+  * Minimalist interface designed for intense, uninterrupted focus sessions.
+  * Integrated Pomodoro / Study Timer with customizable intervals.
+  * Built-in scratchpad for markdown note-taking with local autosave.
+
+--------------------------------------------------------------------------------
+4.8 AI TIMETABLE & WEEKLY STUDY PLANNER GENERATOR (`/timetable`)
+--------------------------------------------------------------------------------
+- Intelligent Schedule Synthesizer:
+  * Students input their available weekly hours, current enrolled courses, and
+    target focus skills.
+  * Google Gemini AI synthesizes a balanced weekly timetable distributing study
+    sessions, project building, assessment practice, and rest intervals.
+- Calendar Exporting:
+  * Generates standard downloadable calendar schedules (.ics format) compatible
+    with Google Calendar, Apple Calendar, and Outlook.
+  * Print-friendly visual timetable grid view.
+
+--------------------------------------------------------------------------------
+4.9 CAREER READINESS SUITE (`/resume-check`, `/resume-generator`)
+--------------------------------------------------------------------------------
+- AI ATS Resume Matcher (`/resume-check`):
+  * Allows students to paste their resume content and target job description.
+  * Analyzes match compatibility (0-100% Match Score).
+  * Highlights missing technical keywords, formatting flaws, and weak impact
+    statements.
+  * Delivers actionable, bullet-by-bullet revision guidance to bypass applicant
+    tracking systems (ATS).
+- Professional Resume Builder (`/resume-generator`):
+  * Structured form fields for Education, Work Experience, Technical Projects,
+    and Certifications.
+  * Automatically syncs verified SkillMap competency scores into the resume.
+  * One-click PDF compilation with clean, recruiter-approved typography.
+
+--------------------------------------------------------------------------------
+4.10 1:1 MENTORSHIP HUB & INTERACTIVE BOOKING (`/mentorship`)
+--------------------------------------------------------------------------------
+- Verified Mentor Directory:
+  * Profiles of industry professionals, alumni, and senior engineering leads.
+  * Details company background, domain expertise, rating, and languages spoken.
+- Filter & Search Controls:
+  * Filter mentors by engineering track (Frontend, Backend, AI/ML, DevOps, etc.).
+- Interactive Booking Calendar (`BookingCalendar.jsx`):
+  * Select available dates and timeslots for 1:1 mentorship sessions.
+  * Specify agenda (e.g., Code Review, System Design Prep, Mock Interview).
+  * Confirmed bookings sync to student and mentor dashboards with email reminders.
+
+--------------------------------------------------------------------------------
+4.11 COMMUNITY HUB & PEER COLLABORATION (`/community`)
+--------------------------------------------------------------------------------
+- Threaded Discussion Forums:
+  * Students post questions, share project breakthroughs, and discuss course
+    concepts.
+  * Category tagging: General, Code Help, Project Collab, Career Advice.
+- Upvoting & Interaction System:
+  * Community members upvote high-value solutions and reply with markdown code
+    formatting.
+- Hackathon Team Finder:
+  * Dedicated channel for finding project teammates based on complementary
+    competency radar graphs.
+
+--------------------------------------------------------------------------------
+4.12 OPPORTUNITY BOARD (`/opportunities`)
+--------------------------------------------------------------------------------
+- Curated Job & Internship Feed:
+  * Real-time listing of active software engineering internships, graduate roles,
+    and academic research fellowships.
+- Competency Fit Indicator:
+  * Compares job requirements directly against the student's live competency
+    radar, indicating match probability (e.g., "92% Skill Match").
+- Quick Application Routing:
+  * Direct outbound application links with one-click resume export.
+
+--------------------------------------------------------------------------------
+4.13 FREELANCE GIG INCUBATOR (`/freelancing`)
+--------------------------------------------------------------------------------
+- Entry-Level Freelance Opportunities:
+  * Vetted short-term contracts and student-friendly freelance projects.
+- AI Proposal Writer Assistant:
+  * Generates polished client pitch proposals highlighting verified SkillMap
+    competencies and relevant portfolio links.
+- Milestone & Invoice Tracking:
+  * Simulates contract deliverables, milestones, and client handoffs.
+
+--------------------------------------------------------------------------------
+4.14 AI STARTUP & PROJECT IDEA ANALYZER (`/ideas`)
+--------------------------------------------------------------------------------
+- Idea Viability Evaluation:
+  * Students submit project or startup proposals for comprehensive AI evaluation.
+- Multi-Criteria Scoring:
+  * Market Viability Score (Market need, target audience, competitive moat).
+  * Technical Complexity Rating (Architecture requirements, scalability risks).
+  * Recommended Tech Stack (Suggested libraries, cloud services, and databases).
+  * Execution Roadmap (Suggested 4-week sprint plan to build MVP).
+
+--------------------------------------------------------------------------------
+4.15 GAMIFICATION, XP ENGINE & LEADERBOARDS (`/leaderboard`)
+--------------------------------------------------------------------------------
+- Experience Points (XP) & Leveling:
+  * Earn XP by passing adaptive assessments, completing roadmap milestones,
+    maintaining study streaks, and contributing to community forums.
+- Cohort Leaderboard:
+  * Friendly, transparent ranking among university peers and track cohorts.
+- Digital Achievement Badges (`SkillBadge.jsx`):
+  * Earnable milestone badges (e.g., "Docker Voyager", "Algorithms Maestro",
+    "Streak Champion", "Mentor Favorite").
+
+--------------------------------------------------------------------------------
+4.16 STUDENT PROFILE & SETTINGS (`/profile`)
+--------------------------------------------------------------------------------
+- Personal Identity & Biographies:
+  * Editable profile name, avatar, university name, department, and bio.
+- Career Aspirations:
+  * Customize primary track and long-term career ambition.
+- System Theme Controls:
+  * Seamless light mode and dark mode switching with persistent user preference.
+- Data Privacy & Account Management:
+  * Export personal audit data or delete account in compliance with privacy laws.
+
+--------------------------------------------------------------------------------
+4.17 INSTITUTIONAL ADMIN COMMAND CENTER (`/admin/*`)
+--------------------------------------------------------------------------------
+- Admin Overview (`/admin`):
+  * Macro-level analytics: total active students, average competency score
+    across cohorts, quiz completion velocity, and top struggling skills.
+- Student Directory Management (`/admin/students`):
+  * Search, inspect, and evaluate individual student profiles and radar graphs.
+  * Manual competency adjustments and academic intervention flags.
+- Course & Lecture Management (`/admin/lectures`, `/admin/course-tracking`):
+  * Add, update, and sequence curriculum lectures and documentation resources.
+- Sector Benchmarking Controls (`/admin/sectors`):
+  * Calibrate industry baseline standards across sectors to reflect market shifts.
+- Mentors & Opportunities Admin (`/admin/mentors`, `/admin/opportunities`):
+  * Verify new mentor profiles, approve bookings, and post institutional job calls.
+- Events & Freelance Management (`/admin/events`, `/admin/freelance`):
+  * Schedule university webinars, campus hackathons, and curated project grants.
+- Footer & Legal Controls (`/admin/footer-settings`):
+  * Update institutional disclosures, accreditation info, and social links.
+
+--------------------------------------------------------------------------------
+4.18 DOCUMENTATION & ENGINEERING REPORTS CENTER (`/system-docs`)
+--------------------------------------------------------------------------------
+- Real-time System Status:
+  * Visual audit indicators confirming operational status of all 6 foundational
+    learning and assessment pillars.
+- Instant Report Generation:
+  * "Project Supporting Doc (PDF)": Downloadable 2-page executive summary,
+    methodology, target users, and full technology stack specification.
+  * "System Architecture (PDF)": Downloadable 4-page formal technical specification.
+  * "Student Audit Dossier (PDF)": Personalized student competency audit dossier.
+  * "Comprehensive System Specification (TXT)": This complete text document.
+
+
+================================================================================
+5. DATA SCHEMAS & ENTITY STRUCTURES
+================================================================================
+
+5.1 USER PROFILE SCHEMA (`users/{userId}` or Local Storage profile)
+------------------------------------------------------------------
+{
+  "id": "usr_948201",
+  "email": "student@university.edu",
+  "name": "Jane Doe",
+  "role": "student",              // "student" | "admin" | "mentor"
+  "track": "Full Stack Engineer", // Track identifier
+  "careerGoal": "Senior Full Stack Cloud Engineer",
+  "xp": 1450,
+  "level": 4,
+  "streak": 7,                    // Consecutive days active
+  "lastActive": "2026-09-22T14:32:00Z",
+  "competencyGraph": [
+    { "skill": "Frontend Architecture", "level": 0.85, "maxLevel": 1.0 },
+    { "skill": "Backend APIs",          "level": 0.72, "maxLevel": 1.0 },
+    { "skill": "Database & Storage",    "level": 0.68, "maxLevel": 1.0 },
+    { "skill": "DevOps & Cloud",        "level": 0.54, "maxLevel": 1.0 },
+    { "skill": "Problem Solving",       "level": 0.79, "maxLevel": 1.0 },
+    { "skill": "System Architecture",   "level": 0.60, "maxLevel": 1.0 }
+  ],
+  "activityLog": [
+    {
+      "id": "act_101",
+      "timestamp": "2026-09-22T14:30:00Z",
+      "action": "Completed adaptive assessment on DevOps & Cloud",
+      "skill": "DevOps & Cloud",
+      "delta": 0.12
+    }
+  ],
+  "roadmapProgress": {
+    "completedMilestones": ["m_01", "m_02"],
+    "inProgressMilestones": ["m_03"]
+  }
+}
+
+5.2 ADAPTIVE QUESTION SCHEMA
+----------------------------
+{
+  "id": "q_adaptive_502",
+  "skill": "DevOps & Cloud",
+  "difficulty": 0.70,             // Float between 0.15 and 0.95
+  "question": "Which Linux kernel feature directly isolates process resource usage (CPU/memory) in container runtimes?",
+  "options": [
+    "Namespaces",
+    "Control Groups (cgroups)",
+    "Chroot Jails",
+    "Seccomp Filters"
+  ],
+  "correctIndex": 1,
+  "explanation": "cgroups (control groups) limit and isolate resource usage (CPU, memory, disk I/O), whereas namespaces isolate process visibility."
+}
+
+5.3 MENTOR BOOKING SCHEMA (`bookings/{bookingId}`)
+--------------------------------------------------
+{
+  "id": "bk_7721",
+  "studentId": "usr_948201",
+  "studentName": "Jane Doe",
+  "mentorId": "mnt_302",
+  "mentorName": "Alex Chen",
+  "date": "2026-09-25",
+  "timeSlot": "15:00 - 15:45",
+  "topic": "System Design & Architecture Review",
+  "status": "confirmed"           // "pending" | "confirmed" | "completed"
+}
+
+
+================================================================================
+6. API SPECIFICATIONS & BACKEND INTEGRATIONS
+================================================================================
+
+6.1 POST /api/ai/invoke-llm
+---------------------------
+- Description : Primary backend proxy route for Google Gemini generative AI.
+- Authentication: Valid session bearer token or authenticated user context.
+- Payload Body:
+  {
+    "prompt": "Generate a multiple-choice question on Kubernetes at difficulty 0.75...",
+    "systemInstruction": "You are an expert technical interviewer and academic assessor...",
+    "responseFormat": "json"      // "text" | "json"
+  }
+- Response Body:
+  {
+    "success": true,
+    "text": "{ \"question\": \"...\", \"options\": [...], \"correctIndex\": 0, \"explanation\": \"...\" }"
+  }
+- Fallback Strategy: If upstream Gemini services encounter rate limits or network
+  delays, the Express server gracefully returns a structured offline payload
+  drawn from local domain banks.
+
+6.2 STATIC ASSET & HEALTH SERVICES
+----------------------------------
+- GET /health                  : Returns { status: "ok", timestamp: ... }
+- GET /SKILLMAP_FULL_DOCUMENTATION.txt : Direct download of this full specification.
+- GET /*                       : Handled by Vite middleware (dev) or express.static
+                                 serving dist/index.html (production).
+
+
+================================================================================
+7. SECURITY, PRIVACY & OFFLINE PERSISTENCE
+================================================================================
+
+- Protected API Keys:
+  Google Gemini API credentials are exclusively loaded in server environment
+  variables (`GEMINI_API_KEY`) and are never exposed to the client bundle.
+- Route Protection:
+  React client-side routes are guarded by `<ProtectedRoute />` wrappers.
+  Unauthenticated traffic attempting to access `/dashboard`, `/assessment`,
+  `/roadmap`, or `/profile` is automatically redirected to `/login`.
+- Role-Based Access Control (RBAC):
+  Administrative paths (`/admin/*`) strictly verify user permissions before
+  rendering management modules.
+- Multi-Tab Offline Caching:
+  Cloud Firestore is initialized with `persistentLocalCache` and
+  `persistentMultipleTabManager`. Students on unstable university Wi-Fi can
+  continue reading course materials, writing notes, and reviewing roadmaps
+  without losing state.
+
+
+================================================================================
+8. DEPLOYMENT, BUILD & MAINTENANCE GUIDELINES
+================================================================================
+
+- Development Server:
+  `npm run dev` executes `tsx server.ts` launching Express and Vite concurrently
+  on port 3000.
+- Quality Auditing:
+  `npm run lint` executes ESLint with strict zero-error policy.
+- Production Compilation:
+  `npm run build` runs:
+    1. `vite build` to compile optimized client JS/CSS into `dist/`.
+    2. `esbuild server.ts --bundle --platform=node ... --outfile=dist/server.cjs`
+       to produce the standalone backend runtime.
+- Production Execution:
+  `npm run start` executes `node dist/server.cjs` serving the full application
+  on Google Cloud Run.
+
+================================================================================
+END OF SKILLMAP COMPREHENSIVE PLATFORM SPECIFICATION
+================================================================================

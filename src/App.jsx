@@ -101,6 +101,8 @@ const AuthenticatedApp = () => {
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/assessment" element={<Assessment />} />
+            <Route path="/code-quiz" element={<Assessment />} />
+            <Route path="/quiz" element={<Assessment />} />
             <Route path="/resume-check" element={<ResumeCheck />} />
             <Route path="/opportunities" element={<Opportunities />} />
             <Route path="/course-mode" element={<CourseMode />} />

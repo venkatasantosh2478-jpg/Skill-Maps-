@@ -17,7 +17,7 @@ import {
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
-import { generateSystemArchitecturePDF, generateStudentPortfolioAuditPDF } from "@/lib/projectDocsPdfGenerator";
+import { generateSystemArchitecturePDF, generateStudentPortfolioAuditPDF, generateProjectExecutiveSummaryPDF } from "@/lib/projectDocsPdfGenerator";
 
 const SIX_PILLARS = [
   {
@@ -117,6 +117,40 @@ export default function DocumentationCenter() {
   const { toast } = useToast();
   const [downloadingArch, setDownloadingArch] = useState(false);
   const [downloadingAudit, setDownloadingAudit] = useState(false);
+  const [downloadingExec, setDownloadingExec] = useState(false);
+
+  const handleDownloadFullDocTXT = () => {
+    const link = document.createElement("a");
+    link.href = "/SKILLMAP_FULL_DOCUMENTATION.txt";
+    link.download = "SKILLMAP_FULL_DOCUMENTATION.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({
+      title: "Full Documentation Downloaded",
+      description: "SKILLMAP_FULL_DOCUMENTATION.txt has been downloaded."
+    });
+  };
+
+  const handleDownloadExecSummaryPDF = () => {
+    setDownloadingExec(true);
+    try {
+      generateProjectExecutiveSummaryPDF();
+      toast({
+        title: "Project Supporting Document Generated",
+        description: "The complete 500-word Project Supporting Document (PDF) has been downloaded."
+      });
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Export Error",
+        description: "Failed to generate project supporting document PDF.",
+        variant: "destructive"
+      });
+    } finally {
+      setDownloadingExec(false);
+    }
+  };
 
   const handleDownloadArchPDF = () => {
     setDownloadingArch(true);
@@ -186,12 +220,29 @@ export default function DocumentationCenter() {
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-3">
           <button
+            onClick={handleDownloadFullDocTXT}
+            className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/25 cursor-pointer transition-all border border-emerald-500/30"
+          >
+            <FileText className="h-4 w-4" />
+            <span>Download Full Docs (TXT)</span>
+          </button>
+
+          <button
+            onClick={handleDownloadExecSummaryPDF}
+            disabled={downloadingExec}
+            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/25 cursor-pointer transition-all border border-indigo-400/30"
+          >
+            <FileCheck className="h-4 w-4" />
+            <span>{downloadingExec ? "Generating PDF..." : "Export Project Supporting Doc (PDF)"}</span>
+          </button>
+
+          <button
             onClick={handleDownloadArchPDF}
             disabled={downloadingArch}
             className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/20 cursor-pointer transition-all"
           >
             <Download className="h-4 w-4" />
-            <span>{downloadingArch ? "Generating PDF..." : "Export System Architecture (PDF)"}</span>
+            <span>{downloadingArch ? "Generating..." : "System Architecture (PDF)"}</span>
           </button>
 
           <button
@@ -200,7 +251,7 @@ export default function DocumentationCenter() {
             className="px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold flex items-center gap-2 border border-slate-700 cursor-pointer transition-all"
           >
             <FileText className="h-4 w-4" />
-            <span>{downloadingAudit ? "Generating..." : "Export Student Audit Dossier (PDF)"}</span>
+            <span>{downloadingAudit ? "Generating..." : "Student Audit Dossier (PDF)"}</span>
           </button>
         </div>
       </div>
@@ -284,13 +335,27 @@ export default function DocumentationCenter() {
               You can instantly download the comprehensive 4-page system architecture specification document or generate a customized student audit dossier containing real-time competency ratings across all 6 axes.
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={handleDownloadFullDocTXT}
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md transition-all shrink-0"
+            >
+              <FileText className="h-4 w-4" />
+              <span>Full System Docs (TXT)</span>
+            </button>
+            <button
+              onClick={handleDownloadExecSummaryPDF}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md transition-all shrink-0"
+            >
+              <FileCheck className="h-4 w-4" />
+              <span>Project Supporting Doc (PDF)</span>
+            </button>
             <button
               onClick={handleDownloadArchPDF}
-              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md transition-all shrink-0"
+              className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-2 cursor-pointer border border-slate-700 transition-all shrink-0"
             >
               <Download className="h-4 w-4" />
-              <span>Download System Docs (PDF)</span>
+              <span>System Specs (PDF)</span>
             </button>
           </div>
         </div>

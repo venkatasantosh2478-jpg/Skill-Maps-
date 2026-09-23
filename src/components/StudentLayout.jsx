@@ -78,7 +78,7 @@ const navSections = [
     title: "ASSESSMENTS & SYNC",
     items: [
       { to: "/profile?tab=certificates", label: "My Certificates", icon: Award, badge: "Verified" },
-      { to: "/assessment", label: "Skill Assessments", icon: ClipboardCheck },
+      { to: "/assessment", label: "Skill & Code Quiz Assessment", icon: ClipboardCheck, badge: "Adaptive" },
       { to: "/resume-check", label: "Resume Intelligence Score", icon: FileText, badge: "ATS" },
       { to: "/course-mode", label: "Curriculum Sprint Tracker", icon: GraduationCap },
       { to: "/resources", label: "Curated Resource Library", icon: BookOpen },

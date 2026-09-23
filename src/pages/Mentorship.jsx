@@ -35,14 +35,18 @@ export default function Mentorship() {
 
   const { toast } = useToast();
 
-  const loadMentorsAndSessions = async () => {
-    setMentors(getStoredMentors());
+  const loadSessions = async () => {
     try {
       const list = await skillsMap.entities.GuidanceSession.list("-date");
       setSessions(list || []);
     } catch (e) {
       console.warn("Could not load booked mentorship sessions:", e);
     }
+  };
+
+  const loadMentorsAndSessions = async () => {
+    setMentors(getStoredMentors());
+    await loadSessions();
   };
 
   useEffect(() => {
@@ -52,10 +56,6 @@ export default function Mentorship() {
     };
     window.addEventListener("skillsmap_store_update", handleUpdate);
     return () => window.removeEventListener("skillsmap_store_update", handleUpdate);
-  }, []);
-
-  useEffect(() => {
-    loadSessions();
   }, []);
 
   const sectors = [

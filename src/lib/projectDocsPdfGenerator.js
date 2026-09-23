@@ -296,6 +296,126 @@ export function generateSystemArchitecturePDF() {
   doc.save("SkillsMap_System_Architecture_Specification.pdf");
 }
 
+export function generateProjectExecutiveSummaryPDF() {
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  // COVER / HEADER BANNER
+  doc.setFillColor(15, 23, 42); // slate-900
+  doc.rect(0, 0, pageWidth, 42, "F");
+
+  // Accent line
+  doc.setFillColor(79, 70, 229); // indigo-600
+  doc.rect(0, 0, pageWidth, 4, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(22);
+  doc.text("SKILLMAP: PROJECT SUPPORTING DOCUMENT", 15, 20);
+
+  doc.setFontSize(11);
+  doc.setTextColor(199, 210, 254);
+  doc.text("Executive Summary, Core Methodology, Target Users, Impact & Tech Stack", 15, 30);
+
+  // SECTION 1: EXECUTIVE SUMMARY
+  let currentY = 52;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(15, 23, 42);
+  doc.text("1. Executive Summary & Overview", 15, currentY);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(51, 65, 85);
+  const execSummary = [
+    "SkillMap is an AI-driven academic companion and career acceleration platform built to resolve",
+    "the systemic mismatch between higher education curricula and rapidly evolving global industry demands.",
+    "Powered by Google Gemini AI and Firebase cloud architecture, SkillMap transforms static academic",
+    "learning into a dynamic, data-backed competency ecosystem."
+  ];
+  doc.text(execSummary, 15, currentY + 7);
+
+  // SECTION 2: CORE METHODOLOGY
+  currentY += 32;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(15, 23, 42);
+  doc.text("2. Core Methodology", 15, currentY);
+
+  autoTable(doc, {
+    startY: currentY + 5,
+    head: [["Pillar / Phase", "Methodological Description", "Key Technical Component"]],
+    body: [
+      ["1. Competency Mapping & Gap Analysis", "Constructs a multidimensional skill graph across 6 technical axes. Evaluates proficiency against industry benchmarks to highlight gaps.", "360° Competency Radar (Recharts) & IRT Diagnostic Quiz"],
+      ["2. Generative AI Personalization", "Generates custom learning roadmaps, lecture note summaries, adaptive timetables, and project validation tailored to career targets.", "Google Gemini 2.5 Flash (@google/genai API Proxy)"],
+      ["3. Mentorship & Career Readiness", "Connects learners with industry experts for 1:1 guidance and provides AI Resume ATS matching for job readiness.", "Firebase Auth/Firestore & AI Resume ATS Parser"]
+    ],
+    theme: "striped",
+    headStyles: { fillColor: [79, 70, 229], fontSize: 9 },
+    bodyStyles: { fontSize: 8.5 }
+  });
+
+  // SECTION 3: TARGET USERS & PRACTICAL IMPACT
+  currentY = doc.lastAutoTable.finalY + 12;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(15, 23, 42);
+  doc.text("3. Target Users & Expected Practical Impact", 15, currentY);
+
+  autoTable(doc, {
+    startY: currentY + 5,
+    head: [["Dimension", "Target Audience", "Expected Practical Outcome & Impact"]],
+    body: [
+      ["Students & Job Seekers", "Undergraduate / Postgraduate learners", "Replaces career ambiguity with clear competency metrics, saving prep time via AI study materials."],
+      ["Faculty & Universities", "Educators & Department Heads", "Provides real-time visibility into student cohort progress and curriculum alignment with industry demands."],
+      ["Industry & Recruiters", "Mentors, Alumni & Hiring Managers", "Democratizes professional mentorship and connects talent acquisition directly with job-ready candidates."]
+    ],
+    theme: "grid",
+    headStyles: { fillColor: [30, 41, 59], fontSize: 9 },
+    bodyStyles: { fontSize: 8.5 }
+  });
+
+  // PAGE 2: TECH STACK
+  doc.addPage();
+
+  // Header
+  doc.setFillColor(79, 70, 229);
+  doc.rect(0, 0, pageWidth, 16, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.text("SKILLMAP: TECHNOLOGY STACK SPECIFICATION", 15, 11);
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(15, 23, 42);
+  doc.text("4. Comprehensive Technology Stack", 15, 28);
+
+  autoTable(doc, {
+    startY: 33,
+    head: [["Layer / Domain", "Technologies Used", "Purpose & Architectural Role"]],
+    body: [
+      ["Frontend Architecture", "React 18, Vite, React Router DOM v6, React Query", "High-performance SPA with client-side route protection and state caching."],
+      ["Styling & UI", "Tailwind CSS v3, Lucide React, Tailwind Animate", "Responsive, accessible interface design with fluid keyframe animations."],
+      ["Data Visualization", "Recharts, jsPDF, AutoTable, DOM-to-Image", "Generates 360° competency radar charts and downloadable PDF reports."],
+      ["Backend Infrastructure", "Node.js, Express.js (TypeScript), esbuild, Cloud Run", "Containerized server hosting API proxies and bundling production code."],
+      ["AI Engine", "Google Gemini 2.5 Flash (@google/genai)", "Powers adaptive roadmap generation, notes summarization, and ATS resume matching."],
+      ["Database & Auth", "Firebase Auth, Cloud Firestore (Offline Persistence)", "Real-time user authentication and multi-tab persistent database storage."]
+    ],
+    theme: "striped",
+    headStyles: { fillColor: [79, 70, 229], fontSize: 9 },
+    bodyStyles: { fontSize: 8.5 }
+  });
+
+  // Footer
+  doc.setFontSize(8.5);
+  doc.setTextColor(148, 163, 184);
+  doc.text(`Official SkillMap Executive Supporting Document | Generated: ${new Date().toLocaleDateString()}`, 15, pageHeight - 12);
+
+  doc.save("SkillMap_Project_Executive_Supporting_Document.pdf");
+}
+
 export function generateStudentPortfolioAuditPDF(studentName = "Learner", targetRole = "Full Stack Engineer", competencyScores = []) {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();

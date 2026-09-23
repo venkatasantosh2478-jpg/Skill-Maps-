@@ -648,6 +648,12 @@ app.post("/api/ai/adaptive-question", async (req, res) => {
   });
 });
 
+app.get("/SKILLMAP_FULL_DOCUMENTATION.txt", (_req, res) => {
+  const publicPath = path.join(process.cwd(), "public", "SKILLMAP_FULL_DOCUMENTATION.txt");
+  res.setHeader("Content-Type", "text/plain; charset=utf-8");
+  res.sendFile(publicPath);
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

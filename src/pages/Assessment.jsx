@@ -84,8 +84,12 @@ export default function Assessment() {
   return (
     <div className="p-6 lg:p-10 max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Adaptive Assessment</h1>
-        <p className="text-slate-500 mt-1">5 questions that adapt to your level — correct answers get harder.</p>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">Code Quiz & IRT Engine</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Live AI Calibrated</span>
+        </div>
+        <h1 className="text-3xl font-bold text-slate-900">Adaptive Skill & Code Assessment</h1>
+        <p className="text-slate-500 mt-1">5 dynamic questions and code evaluations that adapt to your level — correct answers increase question difficulty.</p>
       </div>
 
       {results ? (
