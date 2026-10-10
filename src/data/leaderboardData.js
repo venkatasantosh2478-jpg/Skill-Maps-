@@ -135,7 +135,7 @@ function getActiveUser() {
 
 export function getStoredLeaderboard() {
   const activeUser = getActiveUser();
-  const userName = activeUser?.full_name || activeUser?.displayName || (activeUser?.email ? activeUser.email.split("@")[0] : "Student Candidate");
+  const userName = activeUser?.full_name || activeUser?.name || activeUser?.displayName || (activeUser?.email ? activeUser.email.split("@")[0] : "Student Candidate");
   const userXp = typeof activeUser?.xp === "number" ? activeUser.xp : (activeUser?.role === "admin" ? 4500 : 2150);
   const userTrack = activeUser?.careerGoal || "Full Stack Cloud & AI Architecture";
   const userStreak = activeUser?.streakDays ?? 5;

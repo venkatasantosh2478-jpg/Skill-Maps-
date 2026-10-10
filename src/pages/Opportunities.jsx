@@ -131,11 +131,25 @@ export default function Opportunities() {
                       className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
                     >
                       <div>
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <h3 className="font-heading font-bold text-slate-900 text-base group-hover:text-indigo-600 transition-colors">
-                            {o.title}
-                          </h3>
+                        {/* Company & Enrollment Type */}
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">
+                            {o.companyName || "Company Partner"}
+                          </span>
+                          <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                            {o.enrollmentType || "Full-Time"}
+                          </span>
                         </div>
+
+                        <h3 className="font-heading font-extrabold text-slate-900 text-base group-hover:text-indigo-600 transition-colors mb-1">
+                          {o.role || o.title}
+                        </h3>
+
+                        {o.description && (
+                          <p className="text-xs text-slate-500 line-clamp-2 mb-3">
+                            {o.description}
+                          </p>
+                        )}
 
                         {o.overlapCount > 0 ? (
                           <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full mb-3">
@@ -148,22 +162,28 @@ export default function Opportunities() {
 
                         {o.requiredSkills?.length > 0 && (
                           <div className="space-y-1.5 mb-4">
-                            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Required Skills</p>
+                            <div className="flex items-center justify-between">
+                              <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Required Skills</p>
+                              <span className="text-[10px] text-indigo-600 font-medium">Click skill to test</span>
+                            </div>
                             <div className="flex flex-wrap gap-1.5">
                               {o.requiredSkills.map((s, i) => {
                                 const isGap = targetSkills.includes(s);
                                 return (
-                                  <span 
-                                    key={i} 
+                                  <a 
+                                    key={i}
+                                    href={`/assessment?skill=${encodeURIComponent(s)}`}
+                                    title={`Take adaptive test for ${s}`}
                                     className={cn(
-                                      "text-xs px-2.5 py-1 rounded-xl font-medium transition-colors",
+                                      "text-xs px-2.5 py-1 rounded-xl font-medium transition-all hover:underline flex items-center gap-1",
                                       isGap 
                                         ? "bg-indigo-50 text-indigo-700 font-bold border border-indigo-200" 
-                                        : "bg-slate-100 text-slate-600"
+                                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                                     )}
                                   >
-                                    {s}
-                                  </span>
+                                    <span>{s}</span>
+                                    <span className="text-[9px] opacity-60">⚡</span>
+                                  </a>
                                 );
                               })}
                             </div>
@@ -171,19 +191,30 @@ export default function Opportunities() {
                         )}
                       </div>
 
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-auto">
+                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-auto gap-2">
                         <div className="space-y-0.5">
-                          <p className="text-[10px] uppercase font-bold text-slate-400">Min Proficiency</p>
+                          <p className="text-[10px] uppercase font-bold text-slate-400">Min Skill Level</p>
                           <p className="text-xs font-bold text-slate-700">{Math.round((o.minLevel || 0) * 100)}%</p>
                         </div>
-                        {o.link && (
+                        {o.link ? (
                           <a 
                             href={o.link} 
                             target="_blank" 
-                            rel="noreferrer" 
-                            className="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center gap-1.5 transition-colors"
+                            rel="noopener noreferrer" 
+                            className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+                            title="Open direct event / application website"
                           >
-                            <span>Explore Role</span>
+                            <span>Register & Apply</span>
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </a>
+                        ) : (
+                          <a 
+                            href="https://google.com" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                          >
+                            <span>Open Link</span>
                             <ExternalLink className="h-3.5 w-3.5" />
                           </a>
                         )}

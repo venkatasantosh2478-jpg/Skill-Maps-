@@ -221,13 +221,14 @@ export default function Profile() {
 
     try {
       if (profile?.id) {
-        await updateProfile(profile.id, {
+        const updatedProf = await updateProfile(profile.id, {
           full_name: fullName,
           name: fullName,
           institution: university,
           careerGoal,
           bio
         });
+        setProfile((prev) => ({ ...prev, ...updatedProf, full_name: fullName, name: fullName, institution: university, careerGoal, bio }));
       }
 
       // Also update AuthContext & localStorage for instant live synchronization
@@ -254,6 +255,18 @@ export default function Profile() {
         localStorage.setItem("skillsmap_user_profile", JSON.stringify(updated));
         window.dispatchEvent(new CustomEvent("skillsmap_leaderboard_update"));
       }
+
+      // Always write to localStorage directly as well to guarantee cross-window and instant storage event sync
+      try {
+        const directKeys = ["skillsmap_active_user", "skillsmap_mock_user", "skillsmap_user_profile"];
+        directKeys.forEach((k) => {
+          const existing = JSON.parse(localStorage.getItem(k) || "{}");
+          const fresh = { ...existing, full_name: fullName, name: fullName, institution: university, careerGoal, bio };
+          localStorage.setItem(k, JSON.stringify(fresh));
+        });
+        window.dispatchEvent(new CustomEvent("skillsmap_leaderboard_update"));
+        window.dispatchEvent(new CustomEvent("skillsmap_store_update", { detail: { key: "user" } }));
+      } catch (e) {}
 
       // Update in Peer Talent so Idea Analyzer matches
       updatePeerTalentProfile({

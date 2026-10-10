@@ -19,7 +19,8 @@ import {
   Sparkles,
   RefreshCw,
   Clock,
-  Layers
+  Layers,
+  Lightbulb
 } from "lucide-react";
 import { SUBJECTS_LIST, ALL_SUBJECT_DAY_NOTES, SUBJECT_WEB_DOCUMENTATION } from "@/data/courseDocsData";
 import { downloadFullCoursePDF, downloadSingleDayPDF } from "@/lib/coursePdfGenerator";
@@ -45,6 +46,7 @@ export default function CourseDocs() {
   // Interactive Quiz state
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
+  const [showQuizHint, setShowQuizHint] = useState(false);
   const [completedDays, setCompletedDays] = useState({});
 
   // Active Embedded Video
@@ -84,6 +86,7 @@ export default function CourseDocs() {
     setSimulatedOutput(null);
     setSelectedAnswer(null);
     setIsAnswerSubmitted(false);
+    setShowQuizHint(false);
     setActiveVideoIndex(0);
   };
 
@@ -93,6 +96,7 @@ export default function CourseDocs() {
     setSimulatedOutput(null);
     setSelectedAnswer(null);
     setIsAnswerSubmitted(false);
+    setShowQuizHint(false);
     setActiveVideoIndex(0);
   };
 
@@ -881,15 +885,27 @@ export default function CourseDocs() {
                       })}
                     </div>
 
-                    <div className="flex items-center justify-between pt-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
                       {!isAnswerSubmitted ? (
-                        <button
-                          onClick={() => selectedAnswer !== null && setIsAnswerSubmitted(true)}
-                          disabled={selectedAnswer === null}
-                          className="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all disabled:opacity-40"
-                        >
-                          Submit Answer
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => selectedAnswer !== null && setIsAnswerSubmitted(true)}
+                            disabled={selectedAnswer === null}
+                            className="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all disabled:opacity-40"
+                          >
+                            Submit Answer
+                          </button>
+                          {currentDay.quiz.hint && (
+                            <button
+                              type="button"
+                              onClick={() => setShowQuizHint((prev) => !prev)}
+                              className="px-3 py-2 rounded-xl text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/50 flex items-center gap-1.5 transition-colors"
+                            >
+                              <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+                              <span>{showQuizHint ? "Hide Hint" : "Need a Hint?"}</span>
+                            </button>
+                          )}
+                        </div>
                       ) : (
                         <div className="space-y-2 w-full">
                           <div className={cn(
@@ -905,18 +921,45 @@ export default function CourseDocs() {
                               {currentDay.quiz.explanation}
                             </p>
                           </div>
-                          <button
-                            onClick={() => {
-                              setSelectedAnswer(null);
-                              setIsAnswerSubmitted(false);
-                            }}
-                            className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
-                          >
-                            Retry Quiz
-                          </button>
+                          <div className="flex items-center justify-between">
+                            <button
+                              onClick={() => {
+                                setSelectedAnswer(null);
+                                setIsAnswerSubmitted(false);
+                                setShowQuizHint(false);
+                              }}
+                              className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
+                            >
+                              Retry Quiz
+                            </button>
+                            {currentDay.quiz.hint && (
+                              <button
+                                type="button"
+                                onClick={() => setShowQuizHint((prev) => !prev)}
+                                className="text-xs text-amber-700 dark:text-amber-400 font-medium hover:underline flex items-center gap-1"
+                              >
+                                <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+                                <span>{showQuizHint ? "Hide Hint" : "Review Hint"}</span>
+                              </button>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
+
+                    {showQuizHint && currentDay.quiz.hint && (
+                      <div className="p-3.5 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/80 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-2.5 animate-in fade-in">
+                        <Lightbulb className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-bold text-[11px] uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-0.5">
+                            Friendly Hint (Simple Terms):
+                          </p>
+                          <p className="leading-relaxed text-slate-700 dark:text-slate-300">
+                            {currentDay.quiz.hint}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

@@ -11,7 +11,8 @@ import {
   FileText,
   Loader2,
   Sparkles,
-  Download
+  Download,
+  Lightbulb
 } from "lucide-react";
 import { generateAdaptiveQuestion, bumpSkill, addActivity, updateProfile } from "@/lib/skillMap";
 import { QUIZ_BANK } from "@/lib/quizBank";
@@ -31,6 +32,7 @@ export default function PhaseQuizModal({
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]); // [{ questionIdx, selected, correct: boolean }]
   const [quizFinished, setQuizFinished] = useState(false);
   const [updatingRoadmap, setUpdatingRoadmap] = useState(false);
@@ -148,6 +150,7 @@ export default function PhaseQuizModal({
       setCurrentQIndex(currentQIndex + 1);
       setSelectedOption(null);
       setIsAnswered(false);
+      setShowHint(false);
     } else {
       // Quiz completed!
       const correctCount = userAnswers.filter((a) => a.isCorrect).length;
@@ -297,7 +300,33 @@ export default function PhaseQuizModal({
               </div>
 
               {/* Question Box */}
-              <div className="mb-5">
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Question</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowHint((prev) => !prev)}
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 flex items-center gap-1 transition-colors"
+                  >
+                    <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+                    <span>{showHint ? "Hide hint" : "Need a hint?"}</span>
+                  </button>
+                </div>
+
+                {showHint && (
+                  <div className="mb-3 p-3 rounded-xl bg-amber-50/90 border border-amber-200 text-amber-900 text-xs flex items-start gap-2 animate-in fade-in">
+                    <Lightbulb className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold">Simple Clue: </span>
+                      <span>
+                        {questions[currentQIndex]?.explanation 
+                          ? `Remember the key idea: ${questions[currentQIndex]?.explanation.slice(0, 130)}... Pick the most straightforward, practical approach.` 
+                          : `Think in simple terms about how ${skill} works. Eliminate the choices that risk breaking or losing data.`}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 <h3 className="font-heading text-base font-bold text-slate-900 leading-relaxed">
                   {questions[currentQIndex]?.question}
                 </h3>

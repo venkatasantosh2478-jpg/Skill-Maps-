@@ -244,6 +244,17 @@ export default function AdminEvents() {
               </div>
 
               <div>
+                <label className="block font-semibold text-slate-300 mb-1">Official Registration / Website URL</label>
+                <input
+                  type="url"
+                  placeholder="https://hackathon-website.com/register"
+                  value={currentEvent.registrationUrl || ""}
+                  onChange={(e) => setCurrentEvent({ ...currentEvent, registrationUrl: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                />
+              </div>
+
+              <div>
                 <label className="block font-semibold text-slate-300 mb-1">Description</label>
                 <textarea
                   rows={3}

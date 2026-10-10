@@ -230,6 +230,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     localStorage.removeItem("skillsmap_mock_user");
     localStorage.removeItem("skillsmap_active_user");
+    localStorage.removeItem("skillsmap_user_profile");
     localStorage.removeItem("skillsmap_access_token");
     try {
       await firebaseSignOut();

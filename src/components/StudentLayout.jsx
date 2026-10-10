@@ -60,10 +60,10 @@ const navSections = [
     title: "CAREER & OPPORTUNITIES",
     items: [
       { to: "/resume-generator", label: "ATS Resume Builder", icon: FileText, badge: "PDF" },
-      { to: "/idea-analyzer", label: "Idea Analyzer & Teams", icon: Sparkles, badge: "AI" },
+      { to: "/idea-analyzer", label: "Startup Idea Analyzer & Teams", icon: Sparkles, badge: "AI" },
       { to: "/events", label: "Hackathons & Events", icon: Trophy, badge: "Prizes" },
       { to: "/freelance", label: "Freelancing & Client Gigs", icon: DollarSign, badge: "Active" },
-      { to: "/opportunities", label: "Jobs & Internships", icon: Briefcase },
+      { to: "/opportunities", label: "Jobs, HR & Internships", icon: Briefcase },
     ]
   },
   {

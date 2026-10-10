@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyProfile, avgCompetency, generateNextAction, updateProfile, addActivity, bumpSkill } from "@/lib/skillMap";
 import { skillsMap } from "@/api/skillsMapClient";
-import CompetencyRadar from "@/components/CompetencyRadar";
+import CompetencyPieChart from "@/components/CompetencyPieChart";
 import ActivityFeed from "@/components/ActivityFeed";
 import SkillBadge from "@/components/SkillBadge";
 import SkillGapChart from "@/components/SkillGapChart";
@@ -404,12 +404,12 @@ export default function Dashboard() {
 
       {/* Main Analytics Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Radar Chart */}
+        {/* Pie Chart */}
         <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <div>
-              <h2 className="font-heading text-lg font-bold text-slate-900">Competency Spider Graph</h2>
-              <p className="text-xs text-slate-400">Multi-dimensional evaluation across 10 core engineering capabilities</p>
+              <h2 className="font-heading text-lg font-bold text-slate-900">Competency Distribution Pie Chart</h2>
+              <p className="text-xs text-slate-400">Proportional evaluation across core engineering capabilities</p>
             </div>
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700">
               <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
@@ -417,7 +417,7 @@ export default function Dashboard() {
             </span>
           </div>
           <div className="pt-2">
-            <CompetencyRadar graph={profile.competencyGraph} height={340} />
+            <CompetencyPieChart graph={profile.competencyGraph} height={340} />
           </div>
         </div>
 

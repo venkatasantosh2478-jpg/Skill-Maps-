@@ -28,19 +28,9 @@ import firebaseConfig from "../../firebase-applet-config.json";
 
 const app = initializeApp(firebaseConfig);
 
-// Modern Firestore initialization with persistent local cache to eliminate enableIndexedDbPersistence deprecation warning
-let firestoreDb;
-try {
-  firestoreDb = initializeFirestore(app, {
-    localCache: persistentLocalCache({
-      tabManager: persistentMultipleTabManager()
-    })
-  }, firebaseConfig.firestoreDatabaseId || "(default)");
-} catch (e) {
-  firestoreDb = getFirestore(app, firebaseConfig.firestoreDatabaseId);
-}
-
-export const db = firestoreDb;
+// Standard Firestore initialization as specified by Firebase skill:
+// export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
 export const auth = getAuth(app);
 

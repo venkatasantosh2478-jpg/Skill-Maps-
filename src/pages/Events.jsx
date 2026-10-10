@@ -8,6 +8,7 @@ import {
   CheckCircle2, 
   Search, 
   ArrowRight,
+  ExternalLink,
   UserPlus,
   Phone,
   Trash2,
@@ -424,27 +425,52 @@ export default function Events() {
 
                 {/* Action Footer */}
                 <div className="p-5 pt-0 space-y-2">
-                  <button
-                    onClick={() => setActiveModalEvent(evt)}
-                    className={cn(
-                      "w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs",
-                      registered
-                        ? "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200"
-                        : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/20"
-                    )}
-                  >
-                    {registered ? (
-                      <>
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                        <span>View My Registration</span>
-                      </>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setActiveModalEvent(evt)}
+                      className={cn(
+                        "flex-1 py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs",
+                        registered
+                          ? "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200"
+                          : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/20"
+                      )}
+                    >
+                      {registered ? (
+                        <>
+                          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                          <span>Saved Entry</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Join Event</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+
+                    {evt.registrationUrl ? (
+                      <a
+                        href={evt.registrationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="py-2.5 px-3 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-xs transition-all flex items-center justify-center gap-1.5 shrink-0"
+                        title="Open direct event website to register"
+                      >
+                        <span>Event Website Link</span>
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
                     ) : (
-                      <>
-                        <span>Register for Event</span>
-                        <ArrowRight className="h-4 w-4" />
-                      </>
+                      <a
+                        href="https://google.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="py-2.5 px-3 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all flex items-center justify-center gap-1.5 shrink-0"
+                      >
+                        <span>Event Link</span>
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
                     )}
-                  </button>
+                  </div>
 
                   <button
                     onClick={() => {
@@ -951,18 +977,46 @@ export default function Events() {
             </div>
 
             {regSuccess ? (
-              <div className="py-8 text-center space-y-3">
+              <div className="py-8 text-center space-y-4">
                 <div className="h-16 w-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                   <CheckCircle2 className="h-8 w-8" />
                 </div>
                 <h4 className="font-heading text-xl font-bold text-slate-900 dark:text-white">Registration Confirmed!</h4>
-                <p className="text-xs text-slate-500">Your student entry has been successfully logged. Event instructions sent to your email.</p>
+                <p className="text-xs text-slate-500">Your student entry has been successfully logged.</p>
+                {activeModalEvent.registrationUrl && (
+                  <div className="pt-2">
+                    <a
+                      href={activeModalEvent.registrationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-md transition-all"
+                    >
+                      <span>Proceed to Official Event Portal</span>
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </div>
+                )}
               </div>
             ) : (
               <form onSubmit={handleRegisterSubmit} className="space-y-4 text-xs">
-                <div className="p-3.5 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900 text-indigo-900 dark:text-indigo-200 space-y-1">
-                  <p className="font-bold">Prize Pool: {activeModalEvent.prizePool}</p>
-                  <p>Eligibility: {activeModalEvent.eligibility}</p>
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-bold text-xs">Direct Sign-up & Event Details</p>
+                    {activeModalEvent.registrationUrl && (
+                      <a
+                        href={activeModalEvent.registrationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold shadow-xs transition-all flex items-center gap-1 shrink-0"
+                      >
+                        <span>Open Official Website</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-amber-800">
+                    Prizes: <span className="font-semibold">{activeModalEvent.prizePool}</span> · Who can join: <span className="font-semibold">{activeModalEvent.eligibility}</span>
+                  </p>
                 </div>
 
                 <div>

@@ -84,7 +84,7 @@ export default function Landing() {
               <>
                 <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Login</Link>
                 <div className="transition-transform duration-200 hover:scale-105 active:scale-95">
-                  <Link to="/dashboard" className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-600/20 block">
+                  <Link to="/login" className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-600/20 block">
                     Get Started
                   </Link>
                 </div>
@@ -163,7 +163,7 @@ export default function Landing() {
             ) : (
               <>
                 <div className="transition-transform duration-200 hover:-translate-y-0.5 hover:scale-105 active:scale-95">
-                  <Link to="/dashboard" className="px-6 py-3.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/25 flex items-center gap-2">
+                  <Link to="/login" className="px-6 py-3.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/25 flex items-center gap-2">
                     Get Started <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -270,8 +270,8 @@ export default function Landing() {
         <h2 className="text-2xl font-bold text-slate-900 mb-3">Ready to map your skills?</h2>
         <p className="text-slate-500 mb-6">Start with a 2-minute skill profile and get your personalized roadmap.</p>
         <div className="inline-block transition-transform duration-200 hover:scale-105 active:scale-95">
-          <Link to="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/25">
-            Get Started Free <ArrowRight className="h-4 w-4" />
+          <Link to={isAuthenticated ? "/dashboard" : "/login"} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/25">
+            {isAuthenticated ? "Go to Dashboard" : "Get Started Free"} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>

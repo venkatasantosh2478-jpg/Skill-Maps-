@@ -44,28 +44,7 @@ if (isBrowser) {
   if (!window.localStorage.getItem("skillsmap_users")) {
     setStorage("skillsmap_users", INITIAL_USERS);
   }
-  // Initialize default active user session if not explicitly set
-  const storedUser = window.localStorage.getItem("skillsmap_active_user") || window.localStorage.getItem("skillsmap_mock_user");
-  if (!storedUser) {
-    const defaultStudent = {
-      id: "student_default",
-      uid: "student_default",
-      email: "student@skillsmap.io",
-      full_name: "Student Candidate",
-      role: "student",
-      institution: "University Institute of Technology",
-      careerGoal: "Full Stack Cloud & AI Architecture",
-      xp: 2150,
-      streakDays: 5,
-      modulesCompleted: 4,
-      quizzesCompleted: 8,
-      codeChallengesSolved: 9,
-      created_date: new Date().toISOString(),
-    };
-    setStorage("skillsmap_active_user", defaultStudent);
-    setStorage("skillsmap_mock_user", defaultStudent);
-    window.localStorage.setItem(TOKEN_KEY, "token_student_default");
-  }
+  // Only seed table schemas, DO NOT automatically log in unauthenticated visitors
 }
 
 function createEntityStore(storageKey, defaultList) {

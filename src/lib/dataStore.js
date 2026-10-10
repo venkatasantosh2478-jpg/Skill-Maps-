@@ -118,7 +118,16 @@ export function deleteStoredMentor(id) {
 
 // ----------------- EVENTS / HACKATHONS -----------------
 export function getStoredEvents() {
-  return readStorage(STORAGE_KEYS.EVENTS, INITIAL_EVENTS);
+  const list = readStorage(STORAGE_KEYS.EVENTS, INITIAL_EVENTS);
+  // Ensure real registrationUrl from INITIAL_EVENTS is populated if cached event has dummy or missing link
+  const updated = list.map((evt) => {
+    const init = INITIAL_EVENTS.find((i) => i.id === evt.id);
+    if (init && (!evt.registrationUrl || evt.registrationUrl.includes("example.com") || evt.registrationUrl.startsWith("#"))) {
+      return { ...evt, registrationUrl: init.registrationUrl };
+    }
+    return evt;
+  });
+  return updated;
 }
 
 export function saveStoredEvent(event) {

@@ -16,7 +16,7 @@ export const INITIAL_EVENTS = [
     bannerGradient: "from-indigo-900 via-violet-950 to-slate-900",
     description: "Build real-world multi-agent systems and multimodal solutions using Google Gemini models, structured tools, and high-performance serverless backends. Mentors and judges include Staff AI Researchers and Cloud Engineers.",
     featured: true,
-    registrationUrl: "https://hackathons.example.com/global-ai-hackathon",
+    registrationUrl: "https://cloud.google.com/innovators/events",
     status: "Registration Open",
     perks: ["$500 Google Cloud credits per team", "Fast-track interviews for finalists", "Exclusive tech merchandise kit"]
   },
@@ -36,7 +36,7 @@ export const INITIAL_EVENTS = [
     bannerGradient: "from-cyan-900 via-blue-950 to-slate-900",
     description: "The premier student and engineering conference focusing on cloud resiliency, zero-trust infrastructure, and low-latency microservices. Features student research paper tracks and hands-on system architecture labs.",
     featured: true,
-    registrationUrl: "https://events.example.com/cloud-summit-2026",
+    registrationUrl: "https://www.cncf.io/events/",
     status: "Call for Papers / Registration Open",
     perks: ["Free virtual passes for university students", "1:1 career fair with 30+ tech unicorns", "Hands-on certification vouchers"]
   },
@@ -56,7 +56,7 @@ export const INITIAL_EVENTS = [
     bannerGradient: "from-emerald-950 via-teal-950 to-slate-900",
     description: "48-hour competitive algorithmic and software engineering challenge building fault-tolerant settlement engines, anti-fraud anomaly detection pipelines, and high-throughput order books.",
     featured: false,
-    registrationUrl: "https://fintechchallenge.example.com",
+    registrationUrl: "https://stripe.com/events",
     status: "Registration Open",
     perks: ["Direct interview bypass with quantitative engineering teams", "Cash prizes for top 5 algorithms", "Certificate of High Mastery"]
   },
@@ -76,7 +76,7 @@ export const INITIAL_EVENTS = [
     bannerGradient: "from-rose-950 via-red-950 to-slate-900",
     description: "Develop patient-facing digital triage apps, de-identified radiology visualizers, or physician documentation assistants complying with strict medical privacy standards.",
     featured: false,
-    registrationUrl: "https://healthaihack.example.com",
+    registrationUrl: "https://hackingmedicine.mit.edu/",
     status: "Applications Open",
     perks: ["HIPAA-compliant synthetic EHR datasets provided", "Mentorship from clinicians and CTOs", "Pilot deployment opportunities with regional clinics"]
   },
@@ -96,7 +96,7 @@ export const INITIAL_EVENTS = [
     bannerGradient: "from-amber-950 via-emerald-950 to-slate-900",
     description: "Tackle real grid balancing, electric vehicle charging orchestration, and renewable energy storage telemetry problems using streaming time-series algorithms and dashboard interfaces.",
     featured: false,
-    registrationUrl: "https://cleantechsprint.example.com",
+    registrationUrl: "https://energy.mit.edu/events/",
     status: "Upcoming",
     perks: ["Hardware development kits mailed to approved teams", "Green technology mentorship", "Internship interviews with energy startups"]
   },
@@ -116,7 +116,7 @@ export const INITIAL_EVENTS = [
     bannerGradient: "from-indigo-950 via-purple-950 to-slate-900",
     description: "A deep dive hands-on workshop dissecting how modern companies scale to 100M+ requests per second. Includes whiteboard simulation and mock interview questions.",
     featured: true,
-    registrationUrl: "#workshop-register",
+    registrationUrl: "https://zoom.us",
     status: "Seats Available",
     perks: ["Downloadable architecture blueprint template", "Interactive live Q&A with Staff engineers", "Verified workshop completion credential"]
   }

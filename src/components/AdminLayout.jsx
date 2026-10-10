@@ -41,7 +41,7 @@ const navSections = [
       { to: "/admin/footer-settings", label: "Footer & Contact Details", icon: PhoneCall, badge: "Live" },
       { to: "/admin/course-tracking", label: "Syllabus Progress", icon: GraduationCap },
       { to: "/admin/resources", label: "Curriculum Resources", icon: BookOpen },
-      { to: "/admin/opportunities", label: "Employer Match", icon: Briefcase },
+      { to: "/admin/opportunities", label: "HR & Employer Match", icon: Briefcase },
     ]
   }
 ];

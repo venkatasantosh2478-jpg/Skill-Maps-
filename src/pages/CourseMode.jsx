@@ -15,7 +15,8 @@ import {
   ChevronRight,
   FileText,
   Download,
-  Sparkles
+  Sparkles,
+  Lightbulb
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { generateSyllabusPDF } from "@/lib/syllabusPdfGenerator";
@@ -28,6 +29,7 @@ export default function CourseMode() {
   const [quiz, setQuiz] = useState(null);
   const [quizAnswered, setQuizAnswered] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [showHint, setShowHint] = useState(false);
   const navigate = useNavigate();
 
   const load = async () => {
@@ -90,6 +92,7 @@ export default function CourseMode() {
     setQuiz(null);
     setQuizAnswered(false);
     setSelected(null);
+    setShowHint(false);
     if (allDone) generateCertificate(profile.name, profile.careerGoal || profile.track);
   };
 
@@ -103,6 +106,7 @@ export default function CourseMode() {
     setQuiz(null);
     setQuizAnswered(false);
     setSelected(null);
+    setShowHint(false);
   };
 
   const startQuiz = async (skill) => {
@@ -110,6 +114,7 @@ export default function CourseMode() {
     setQuiz(q);
     setQuizAnswered(false);
     setSelected(null);
+    setShowHint(false);
   };
 
   const answerQuiz = (i) => {
@@ -369,6 +374,32 @@ export default function CourseMode() {
                 </button>
               ) : (
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-violet-700">{today.skill} Assessment</span>
+                    <button
+                      type="button"
+                      onClick={() => setShowHint((prev) => !prev)}
+                      className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 flex items-center gap-1.5 transition-colors"
+                    >
+                      <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+                      <span>{showHint ? "Hide Hint" : "Need a Hint?"}</span>
+                    </button>
+                  </div>
+
+                  {showHint && (
+                    <div className="mb-3 p-3 rounded-xl bg-amber-50/90 border border-amber-200 text-amber-900 text-xs flex items-start gap-2 animate-in fade-in">
+                      <Lightbulb className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="font-bold">Simple Clue: </span>
+                        <span>
+                          {quiz.explanation 
+                            ? `Focus on standard engineering best practices: ${quiz.explanation.slice(0, 140)}...` 
+                            : `Think about how this skill is safely used in real applications. Pick the answer that is most reliable.`}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   <p className="text-sm font-semibold text-slate-900 mb-3">{quiz.question}</p>
                   <div className="space-y-2">
                     {quiz.options.map((opt, i) => (

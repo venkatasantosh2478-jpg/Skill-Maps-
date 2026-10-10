@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getMyProfile, updateProfile, addActivity, bumpSkill, generateAdaptiveQuestion } from "@/lib/skillMap";
 import { SKILL_TRACKS } from "@/lib/quizBank";
-import { Loader2, ClipboardCheck, Check, X, Trophy } from "lucide-react";
+import { Loader2, ClipboardCheck, Check, X, Trophy, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Assessment() {
+  const [searchParams] = useSearchParams();
+  const preSkill = searchParams.get("skill");
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [skill, setSkill] = useState("");
+  const [skill, setSkill] = useState(preSkill || "");
   const [running, setRunning] = useState(false);
   const [q, setQ] = useState(null);
   const [qIdx, setQIdx] = useState(0);
@@ -15,6 +18,7 @@ export default function Assessment() {
   const [prevCorrect, setPrevCorrect] = useState(null);
   const [selected, setSelected] = useState(null);
   const [answered, setAnswered] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [results, setResults] = useState(null);
   const [loadingQ, setLoadingQ] = useState(false);
 
@@ -23,9 +27,12 @@ export default function Assessment() {
   const load = async () => {
     const p = await getMyProfile();
     setProfile(p);
+    if (preSkill) {
+      setSkill(preSkill);
+    }
     setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [preSkill]);
 
   const start = async () => {
     setRunning(true);
@@ -40,6 +47,7 @@ export default function Assessment() {
     setLoadingQ(true);
     setSelected(null);
     setAnswered(false);
+    setShowHint(false);
     const question = await generateAdaptiveQuestion(sk, diff, prev);
     setQ(question);
     setLoadingQ(false);
@@ -128,7 +136,32 @@ export default function Assessment() {
             <div className="py-12 text-center"><Loader2 className="h-8 w-8 mx-auto text-indigo-500 animate-spin" /></div>
           ) : (
             <>
-              <span className="inline-block text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full mb-3">{skill}</span>
+              <div className="flex items-center justify-between mb-3">
+                <span className="inline-block text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">{skill}</span>
+                <button
+                  type="button"
+                  onClick={() => setShowHint((prev) => !prev)}
+                  className="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 flex items-center gap-1.5 transition-colors"
+                >
+                  <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+                  <span>{showHint ? "Hide hint" : "Need a hint?"}</span>
+                </button>
+              </div>
+
+              {showHint && (
+                <div className="mb-4 p-3 rounded-xl bg-amber-50/90 border border-amber-200 text-amber-900 text-xs flex items-start gap-2 animate-in fade-in">
+                  <Lightbulb className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold">Simple Clue: </span>
+                    <span>
+                      {q.explanation
+                        ? `Think in everyday terms: ${q.explanation.slice(0, 140)}... Focus on what keeps the system safe and running smoothly.`
+                        : `Think about how ${skill} is used in real life. Pick the option that directly solves the main problem.`}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               <p className="text-lg font-medium text-slate-900 mb-5">{q.question}</p>
               <div className="space-y-2.5">
                 {q.options.map((opt, i) => (

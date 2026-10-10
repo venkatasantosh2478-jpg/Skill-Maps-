@@ -140,12 +140,13 @@ print(inspect_object_internals("SkillsMap Architecture"))`
       quiz: {
         question: "Why does `a = 250; b = 250; a is b` evaluate to True in standard CPython, but `a = 1000; b = 1000; a is b` may evaluate to False in interactive mode?",
         options: [
-          "CPython pre-allocates and interns small integers between -5 and 256 in a static array",
           "Numbers above 256 are automatically converted into strings",
+          "CPython pre-allocates and interns small integers between -5 and 256 in a static array",
           "Large integers cannot be stored in RAM",
           "The garbage collector destroys integers greater than 256"
         ],
-        correctIndex: 0,
+        correctIndex: 1,
+        hint: "Think about small numbers Python uses frequently: it saves memory by reusing the same number boxes for -5 up to 256.",
         explanation: "CPython maintains a static array of integer objects for values between -5 and 256. Any integer in this range reuses the exact same PyObject pointer, making 'is' return True."
       },
       youtubeLectures: [
@@ -270,12 +271,13 @@ print("Get 2 (evicted):", lru.get(2))`
       quiz: {
         question: "What is the average time complexity of looking up a key in a Python dictionary versus checking an element in a Python list of size N?",
         options: [
-          "Dict is O(1) average; List is O(N) linear time",
           "Both are O(log N)",
           "Dict is O(N); List is O(1)",
+          "Dict is O(1) average; List is O(N) linear time",
           "Both are O(1)"
         ],
-        correctIndex: 0,
+        correctIndex: 2,
+        hint: "A dictionary uses a hash key like a coat check ticket to jump straight to the item instantly (O(1)), while checking a list means looking at every single coat in row order (O(N)).",
         explanation: "Python dictionaries use hash tables which achieve O(1) average lookup time, whereas searching in a list requires traversing each element sequentially (O(N))."
       },
       youtubeLectures: [
@@ -364,12 +366,13 @@ for batch in chunked_stream(range(10), 3):
       quiz: {
         question: "What happens when a generator reaches the end of its execution without encountering another yield?",
         options: [
-          "It raises a StopIteration exception to signal completion",
           "It resets to the beginning and loops infinitely",
           "It returns None and crashes the Python runtime",
+          "It raises a StopIteration exception to signal completion",
           "It automatically deletes its own code from memory"
         ],
-        correctIndex: 0,
+        correctIndex: 2,
+        hint: "When there is no more water left in the jug, Python raises a special signal telling the for-loop to 'Stop' iterating.",
         explanation: "In the Python iterator protocol, completing a generator or calling next() past the end triggers a StopIteration exception, which for-loops catch automatically."
       },
       youtubeLectures: [
@@ -470,12 +473,13 @@ print("Valid:", add_points(10, 20))
       quiz: {
         question: "Why is `@functools.wraps(func)` considered a critical best practice when authoring custom Python decorators?",
         options: [
-          "It preserves the original function's name, docstring, and module attributes on the wrapper",
           "It speeds up execution time by compiling the function into C code",
+          "It preserves the original function's name, docstring, and module attributes on the wrapper",
           "It prevents the function from being garbage collected",
           "It allows the function to bypass Python's Global Interpreter Lock (GIL)"
         ],
-        correctIndex: 0,
+        correctIndex: 1,
+        hint: "When you wrap a gift box, you still want the label tag to show the real original sender's name and notes.",
         explanation: "@functools.wraps copies the __name__, __doc__, and other introspection metadata from the target function onto the wrapper so debuggers and logging frameworks can inspect it accurately."
       },
       youtubeLectures: [
@@ -575,12 +579,13 @@ print("Results:", asyncio.run(async_worker_pool([f"Task-{i}" for i in range(5)])
       quiz: {
         question: "What happens if a developer invokes `time.sleep(5)` inside an `async def` handler in a production FastAPI application?",
         options: [
-          "The entire single-threaded event loop blocks for 5 seconds, freezing all incoming user requests",
           "FastAPI automatically spawns a new OS process to handle other requests",
           "AsyncIO converts time.sleep into an async awaitable automatically",
-          "Only the current socket connection is paused without affecting other requests"
+          "Only the current socket connection is paused without affecting other requests",
+          "The entire single-threaded event loop blocks for 5 seconds, freezing all incoming user requests"
         ],
-        correctIndex: 0,
+        correctIndex: 3,
+        hint: "Remember the chef in the kitchen: if the single chef stands completely still and refuses to pass tasks to assistants, all food orders stop.",
         explanation: "Because AsyncIO runs on a single thread using cooperative multitasking, synchronous blocking calls like time.sleep() block the entire thread, halting all pending tasks on the event loop."
       },
       youtubeLectures: [
@@ -689,12 +694,13 @@ export function useDebouncedValue(value, delayMs = 300) {
       quiz: {
         question: "Why did React transition from the legacy Stack Reconciler to the Fiber Architecture?",
         options: [
-          "To enable interruptible, prioritized rendering and prevent large tree diffs from blocking the browser main thread",
           "To remove support for JavaScript classes",
+          "To enable interruptible, prioritized rendering and prevent large tree diffs from blocking the browser main thread",
           "To force all React apps to use TypeScript",
           "To eliminate the need for CSS"
         ],
-        correctIndex: 0,
+        correctIndex: 1,
+        hint: "Think about pausing a movie to answer the phone: Fiber allows React to pause slow background work so user clicks and typing stay butter smooth.",
         explanation: "The Fiber architecture represents work as a linked list rather than a recursive call stack, allowing React to pause, prioritize, and resume rendering without dropping frames on user interactions."
       },
       youtubeLectures: [
@@ -787,12 +793,13 @@ console.log("Indices:", twoSumSorted([2, 7, 11, 15], 9)); // [0, 1]`
       quiz: {
         question: "What is the time complexity of searching for an element in an unsorted array versus a sorted array of size N using binary search?",
         options: [
-          "Unsorted is O(N); Sorted with Binary Search is O(log N)",
           "Both are O(log N)",
           "Unsorted is O(1); Sorted is O(N)",
+          "Unsorted is O(N); Sorted with Binary Search is O(log N)",
           "Both are O(N^2)"
         ],
-        correctIndex: 0,
+        correctIndex: 2,
+        hint: "Looking through a messy pile requires checking each one (N items). Opening a sorted phonebook in the exact middle cuts the work in half every time (log N).",
         explanation: "An unsorted array requires checking every element sequentially (O(N)), while a sorted array allows binary search to halve the search space at each step (O(log N))."
       },
       youtubeLectures: [
@@ -884,12 +891,13 @@ Heap Memory Used: 4 MB`,
       quiz: {
         question: "Why is the `volatile` keyword required in the Double-Checked Locking Singleton pattern in Java?",
         options: [
-          "It prevents CPU instruction reordering during object initialization, ensuring half-initialized instances are never exposed",
           "It allocates the singleton object in Metaspace instead of Heap",
           "It turns the class into an asynchronous virtual thread",
+          "It prevents CPU instruction reordering during object initialization, ensuring half-initialized instances are never exposed",
           "It encrypts the object state in memory"
         ],
-        correctIndex: 0,
+        correctIndex: 2,
+        hint: "Computers like to reorder steps to be faster. 'volatile' puts up a strict fence so nobody sees a house before the foundation and roof are actually built.",
         explanation: "Without 'volatile', the Java Memory Model allows compiler/CPU instruction reordering where memory is allocated and assigned to 'instance' before the constructor finishes executing, causing other threads to read a broken partial object."
       },
       youtubeLectures: [
@@ -995,12 +1003,13 @@ services:
       quiz: {
         question: "What is the primary difference between Linux Namespaces and Control Groups (cgroups) in container isolation?",
         options: [
-          "Namespaces isolate what a process can see (process IDs, network); Cgroups limit how much resource a process can consume (CPU, RAM)",
           "Namespaces run in user space; Cgroups run in hypervisors",
+          "Namespaces isolate what a process can see (process IDs, network); Cgroups limit how much resource a process can consume (CPU, RAM)",
           "Namespaces are only used for storage; Cgroups are only used for GPUs",
           "There is no difference between them"
         ],
-        correctIndex: 0,
+        correctIndex: 1,
+        hint: "Namespaces are blindfolds (what you can see), while cgroups are strict fences on your plate (how much CPU/RAM food you can eat).",
         explanation: "Namespaces provide visibility boundaries (creating the illusion of an isolated operating system), while cgroups enforce resource allocation boundaries (preventing one process from starving the host of CPU or RAM)."
       },
       youtubeLectures: [
