@@ -73,7 +73,7 @@ const BASE_COMPETENCY_MATRIX = [
 ];
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, updateUserProfile } = useAuth();
   const [profile, setProfile] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();

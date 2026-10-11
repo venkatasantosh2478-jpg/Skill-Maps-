@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { 
   auth, 
   signInWithGoogle, 
+  getRedirectResult,
   loginEmailPassword, 
   registerEmailPassword, 
   firebaseSignOut, 
@@ -141,6 +142,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    // Check redirect result for Google sign-in redirect fallback
+    getRedirectResult(auth).then(async (result) => {
+      if (result?.user) {
+        await syncUserFromFirebase(result.user);
+      }
+    }).catch((err) => {
+      console.warn("Redirect result notice:", err);
+    });
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         await syncUserFromFirebase(firebaseUser);

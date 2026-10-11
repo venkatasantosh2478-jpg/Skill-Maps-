@@ -47,89 +47,46 @@ if (isBrowser) {
   // Only seed table schemas, DO NOT automatically log in unauthenticated visitors
 }
 
-function createEntityStore(storageKey, defaultList) {
+import { 
+  collection, 
+  getDocs, 
+  getDoc, 
+  doc, 
+  setDoc, 
+  updateDoc, 
+  deleteDoc, 
+  query, 
+  where 
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+function createEntityStore(collectionName) {
   return {
-    async list(orderBy, limit) {
-      let items = getStorage(storageKey, defaultList);
-      if (orderBy) {
-        const desc = orderBy.startsWith("-");
-        const key = desc ? orderBy.slice(1) : orderBy;
-        items = [...items].sort((a, b) => {
-          const valA = a[key] ?? "";
-          const valB = b[key] ?? "";
-          return desc ? (valB > valA ? 1 : -1) : (valA > valB ? 1 : -1);
-        });
-      }
-      if (limit && typeof limit === "number") {
-        items = items.slice(0, limit);
-      }
-      return items;
+    async list() {
+      const colRef = collection(db, collectionName);
+      const snapshot = await getDocs(colRef);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     },
-
-    async filter(query = {}, orderBy, limit) {
-      let items = getStorage(storageKey, defaultList);
-      items = items.filter((item) => {
-        return Object.entries(query).every(([k, v]) => item[k] === v);
-      });
-      if (orderBy) {
-        const desc = orderBy.startsWith("-");
-        const key = desc ? orderBy.slice(1) : orderBy;
-        items = [...items].sort((a, b) => {
-          const valA = a[key] ?? "";
-          const valB = b[key] ?? "";
-          return desc ? (valB > valA ? 1 : -1) : (valA > valB ? 1 : -1);
-        });
-      }
-      if (limit && typeof limit === "number") {
-        items = items.slice(0, limit);
-      }
-      return items;
-    },
-
     async get(id) {
-      const items = getStorage(storageKey, defaultList);
-      const found = items.find((x) => x.id === id);
-      if (!found) throw new Error(`Entity ${id} not found`);
-      return found;
+      const docRef = doc(db, collectionName, id);
+      const snapshot = await getDoc(docRef);
+      if (!snapshot.exists()) throw new Error(`Entity ${id} not found`);
+      return { id: snapshot.id, ...snapshot.data() };
     },
-
     async create(data) {
-      const items = getStorage(storageKey, defaultList);
-      const activeUser = skillsMapAuth.getCurrentUser();
-      const newItem = {
-        id: `id_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
-        created_date: new Date().toISOString(),
-        updated_date: new Date().toISOString(),
-        created_by_id: activeUser?.id || "user_student_1",
-        ...data,
-      };
-      const updated = [newItem, ...items];
-      setStorage(storageKey, updated);
-      return newItem;
+      const colRef = collection(db, collectionName);
+      const newDocRef = doc(colRef); // Auto-generate ID
+      await setDoc(newDocRef, { ...data, created_date: new Date().toISOString() });
+      return { id: newDocRef.id, ...data };
     },
-
     async update(id, data) {
-      const items = getStorage(storageKey, defaultList);
-      const idx = items.findIndex((x) => x.id === id);
-      if (idx === -1) {
-        const newItem = { id, updated_date: new Date().toISOString(), ...data };
-        setStorage(storageKey, [newItem, ...items]);
-        return newItem;
-      }
-      const updatedItem = {
-        ...items[idx],
-        ...data,
-        updated_date: new Date().toISOString(),
-      };
-      items[idx] = updatedItem;
-      setStorage(storageKey, [...items]);
-      return updatedItem;
+      const docRef = doc(db, collectionName, id);
+      await updateDoc(docRef, { ...data, updated_date: new Date().toISOString() });
+      return { id, ...data };
     },
-
     async delete(id) {
-      const items = getStorage(storageKey, defaultList);
-      const filtered = items.filter((x) => x.id !== id);
-      setStorage(storageKey, filtered);
+      const docRef = doc(db, collectionName, id);
+      await deleteDoc(docRef);
       return { success: true, id };
     },
   };
@@ -444,11 +401,11 @@ export const skillsMap = {
   },
   auth: skillsMapAuth,
   entities: {
-    StudentProfile: createEntityStore("skillsmap_students", INITIAL_STUDENTS),
-    Resource: createEntityStore("skillsmap_resources", INITIAL_RESOURCES),
-    Opportunity: createEntityStore("skillsmap_opportunities", INITIAL_OPPORTUNITIES),
-    GuidanceSession: createEntityStore("skillsmap_sessions", INITIAL_SESSIONS),
-    User: createEntityStore("skillsmap_users", INITIAL_USERS),
+    StudentProfile: createEntityStore("users"),
+    Resource: createEntityStore("resources"),
+    Opportunity: createEntityStore("opportunities"),
+    GuidanceSession: createEntityStore("sessions"),
+    User: createEntityStore("users"),
   },
   integrations: skillsMapIntegrations,
 };

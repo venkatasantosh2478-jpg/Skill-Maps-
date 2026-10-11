@@ -5,6 +5,8 @@ import {
   browserLocalPersistence,
   GoogleAuthProvider, 
   signInWithPopup, 
+  signInWithRedirect,
+  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut, 
@@ -29,7 +31,6 @@ import firebaseConfig from "../../firebase-applet-config.json";
 const app = initializeApp(firebaseConfig);
 
 // Standard Firestore initialization as specified by Firebase skill:
-// export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
 export const auth = getAuth(app);
@@ -42,16 +43,30 @@ try {
 } catch (e) {}
 
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
 
 export async function signInWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     return result.user;
   } catch (error) {
-    console.error("Google Sign-In Error:", error);
+    console.warn("Google Popup Auth Error, attempting redirect:", error);
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request' || error.code === 'auth/unauthorized-domain') {
+      try {
+        await signInWithRedirect(auth, googleProvider);
+        return null;
+      } catch (redirectError) {
+        console.error("Google Redirect Error:", redirectError);
+        throw redirectError;
+      }
+    }
     throw error;
   }
 }
+
+export { getRedirectResult };
 
 export async function loginEmailPassword(email, password) {
   try {

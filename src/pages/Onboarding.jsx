@@ -1,21 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { skillsMap } from "@/api/skillsMapClient";
-import { PRIMARY_TRACKS, SKILL_TRACKS, getQuizForTrack } from "@/lib/quizBank";
+import { PRIMARY_TRACKS, SKILL_TRACKS, getQuizForTrack, LEARNING_STYLE_QUESTIONS } from "@/lib/quizBank";
 import { generateCompetencyGraph, createProfile } from "@/lib/skillMap";
 import { Sparkles, Upload, Loader2, ArrowRight, ArrowLeft, Check, Edit3, Compass, Terminal, Layout, BarChart3, Shield, Cloud, Gamepad2, Coins, Smartphone } from "lucide-react";
 
 const TRACK_ICONS = {
-  "Software Engineering": Terminal,
-  "Data Science": BarChart3,
-  "Product Management": Compass,
-  "UX Design": Layout,
-  "Cybersecurity": Shield,
-  "Cloud & DevOps": Cloud,
-  "Game Development": Gamepad2,
-  "Blockchain & Web3": Coins,
-  "Mobile Development": Smartphone
+  "AI & Machine Learning Engineering": Sparkles,
+  "Full-Stack Cloud & TypeScript Architect": Terminal,
+  "Cloud Infrastructure & SRE": Cloud
 };
 
 export default function Onboarding() {
@@ -32,7 +26,15 @@ export default function Onboarding() {
   const [generating, setGenerating] = useState(false);
 
   // Active quiz list for current track (supports standard and custom tracks)
-  const currentQuiz = getQuizForTrack(track || "Software Engineering");
+  const [diagnosticQuiz, setDiagnosticQuiz] = useState(null);
+
+  useEffect(() => {
+    const trackQuiz = getQuizForTrack(track || "Software Engineering");
+    // Take first 3 questions for theory, then add 2 learning style questions
+    setDiagnosticQuiz([...trackQuiz.slice(0, 3), ...LEARNING_STYLE_QUESTIONS]);
+  }, [track]);
+
+  const currentQuiz = diagnosticQuiz || [];
 
   const handleSelectTrack = (selectedTrack) => {
     setTrack(selectedTrack);
